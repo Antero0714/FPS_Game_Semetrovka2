@@ -71,3 +71,20 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Исключаем временные и кэш-файлы Visual Studio
+*.user
+*.userosscache
+*.sln.docstates
+
+# Исключаем артефакты сборки
+[Bb]in/
+[Oo]bj/
+
+# Исключаем временные файлы
+*.tmp
+*.log
+
+# Оставляем .sln и .csproj, они важны для проектов
+!*.[Ss]ln
+!*.[Cc]sproj
