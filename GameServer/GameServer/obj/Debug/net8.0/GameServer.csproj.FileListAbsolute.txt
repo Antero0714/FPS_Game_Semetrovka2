@@ -1,0 +1,15 @@
+D:\Git\Miracles\GameServer\GameServer\bin\Debug\net8.0\GameServer.exe
+D:\Git\Miracles\GameServer\GameServer\bin\Debug\net8.0\GameServer.deps.json
+D:\Git\Miracles\GameServer\GameServer\bin\Debug\net8.0\GameServer.runtimeconfig.json
+D:\Git\Miracles\GameServer\GameServer\bin\Debug\net8.0\GameServer.dll
+D:\Git\Miracles\GameServer\GameServer\bin\Debug\net8.0\GameServer.pdb
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.AssemblyInfoInputs.cache
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.AssemblyInfo.cs
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.csproj.CoreCompileInputs.cache
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.sourcelink.json
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.dll
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\refint\GameServer.dll
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.pdb
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\GameServer.genruntimeconfig.cache
+D:\Git\Miracles\GameServer\GameServer\obj\Debug\net8.0\ref\GameServer.dll
