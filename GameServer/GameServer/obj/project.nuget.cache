@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nm0IcKHkNY/AsJ65KzptZg0lR1wzteRv7m6W+y3s/6+1nbjAUponzFBj8VZkxakThKeBMFqG3fJF4QowHof2Yw==",
+  "dgSpecHash": "qumf+MDV+fg=",
   "success": true,
-  "projectFilePath": "D:\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
+  "projectFilePath": "D:\\Git\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
