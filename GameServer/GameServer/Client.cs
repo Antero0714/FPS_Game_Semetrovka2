@@ -44,8 +44,24 @@ namespace GameServer
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-                //TODO send welcome packet 
+                ServerSend.Welvome(id, "Добро пожаловать на сервер");
                 
+            }
+
+            public void SendData(Packet _packet)
+            {
+                try
+                {
+                    if (socket != null)
+                    {
+                        stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
+                    }
+                }
+                catch (Exception _ex)
+                {
+
+                    Console.WriteLine($"Ошибка отправки данных игроку {id} via TCP: {_ex}");
+                }
             }
 
             private void ReceiveCallback(IAsyncResult _result)
