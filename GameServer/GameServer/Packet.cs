@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace GameServer
@@ -7,13 +8,18 @@ namespace GameServer
     /// <summary>Sent from server to client.</summary>
     public enum ServerPackets
     {
-        welcome = 1
+        welcome = 1,
+        spawnPlayer,
+        playerPosition,
+        //МОЖНО БУДЕТ УДАЛИТЬ
+        playerRotation
     }
 
     /// <summary>Sent from client to server.</summary>
     public enum ClientPackets
     {
-        welcomeReceived = 1
+        welcomeReceived = 1,
+        playerMovement
     }
 
     public class Packet : IDisposable
@@ -156,6 +162,24 @@ namespace GameServer
         {
             Write(_value.Length); // Add the length of the string to the packet
             buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
+        }
+        /// <summary>Adds a Vector2 to the packet.</summary>
+        /// <param name="_value">The Vector2 to add.</param>
+        public void Write(Vector2 _value)
+        {
+            Write(_value.X);
+            Write(_value.Y);
+
+        }
+        //МОЖНО БУДЕТ УДАЛИТЬ
+        /// <summary>Adds a Quaternion to the packet.</summary>
+        /// <param name="_value">The Quaternion to add.</param>
+        public void Write(Quaternion _value)
+        {
+            Write(_value.X);
+            Write(_value.Y);
+            Write(_value.Z);
+            Write(_value.W);
         }
         #endregion
 
@@ -327,6 +351,16 @@ namespace GameServer
             {
                 throw new Exception("Could not read value of type 'string'!");
             }
+        }
+
+        public Vector2 ReadVector2(bool _moveReadPos = true)
+        {
+            return new Vector2(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+        }
+        //МОЖНО БУДЕТ УДАЛИТЬ
+        public Quaternion ReadQuaternion(bool _moveReadPos = true)
+        {
+            return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
         }
         #endregion
 

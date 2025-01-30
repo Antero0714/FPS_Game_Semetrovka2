@@ -45,5 +45,20 @@ namespace GameServer
                 SendTCPData(_toClient, _packet);
             }
         }
+
+        public static void SpawnPlayer(int _toClient, Player _player)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
+            {
+                _packet.Write(_player.id);
+                _packet.Write(_player.username);
+                _packet.Write(_player.position);
+                //МОЖНО БУДЕТ УДАЛИТЬ
+                _packet.Write(_player.rotation);
+
+                SendTCPData(_toClient, _packet);
+
+            }
+        }
     }
 }
