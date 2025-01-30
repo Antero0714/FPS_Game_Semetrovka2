@@ -14,6 +14,7 @@ public class Client : MonoBehaviour
     public int myId = 0;
     public TCP tcp;
 
+    private bool isConnected = false;
     private delegate void PacketHandler(Packet _packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
 
@@ -36,9 +37,16 @@ public class Client : MonoBehaviour
 
     }
 
+    private void OnApplicationQuit()
+    {
+        Disconnect();
+    }
+
     public void ConnecToServer()
     {
         InitializeClientData();
+
+        isConnected = true;
         tcp.Connect();
     }
 
@@ -99,7 +107,7 @@ public class Client : MonoBehaviour
                 int _byteLength = stream.EndRead(_result);
                 if (_byteLength <= 0)
                 {
-                    //TODO disconnect
+                    instance.Disconnect();
                     return;
                 }
 
@@ -111,7 +119,7 @@ public class Client : MonoBehaviour
             }
             catch (Exception)
             {
-                //TODO: disconnect
+                Disconnect();
             }
         }
 
@@ -160,6 +168,16 @@ public class Client : MonoBehaviour
 
             return false;
         }
+
+        private void Disconnect()
+        {
+            instance.Disconnect();
+
+            stream = null;
+            receivedData = null;
+            receiveBuffer = null;
+            socket = null;
+        }
     }
 
     private void InitializeClientData()
@@ -171,5 +189,16 @@ public class Client : MonoBehaviour
 
         };
         Debug.Log("Initialized packet...");
+    }
+
+    private void Disconnect()
+    {
+        if (isConnected)
+        {
+            isConnected = false;
+            tcp.socket.Close();
+
+            Debug.Log("Disconnected from server.");
+        }
     }
 }

@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
 
     public GameObject localPlayerPrefab;
     public GameObject playerPrefab;
+    public GameObject playerPrefab1;
+    public GameObject playerPrefab2;
+
     private void Awake()
     {
         if (instance == null)
@@ -33,7 +36,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            _player = Instantiate(playerPrefab, _position, _rotation);
+            GameObject[] prefabs = { playerPrefab, playerPrefab1, playerPrefab2 };
+            _player = Instantiate(prefabs[_id % prefabs.Length], _position, _rotation);
         }
 
         _player.GetComponent<PlayerManager>().id = _id;
