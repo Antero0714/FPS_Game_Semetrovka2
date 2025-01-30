@@ -26,7 +26,6 @@ namespace GameServer
 
             private readonly int id;
             private NetworkStream stream;
-
             private byte[] receiveBuffer;
             public TCP(int _id)
             {
@@ -45,22 +44,8 @@ namespace GameServer
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-                ServerSend.Welcome(id, "Добро пожаловать на сервер!");                
-            }
-
-            public void SendData(Packet _packet)
-            {
-                try
-                {
-                    if(socket != null)
-                    {
-                        stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
-                    }
-                }
-                catch(Exception _ex)
-                {
-                    Console.WriteLine($"Ошибка отправки данных игроку {id} via TCP: {_ex}");
-                }
+                //TODO send welcome packet 
+                
             }
 
             private void ReceiveCallback(IAsyncResult _result)
