@@ -35,7 +35,7 @@ namespace GameServer
             }
         }
 
-        public static void Welvome(int _toClient, string _msg)
+        public static void Welcome(int _toClient, string _msg)
         {
             using (Packet _packet = new Packet((int)ServerPackets.welcome))
             {

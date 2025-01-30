@@ -47,7 +47,7 @@ public class Client : MonoBehaviour
         public TcpClient socket;
 
         private NetworkStream stream;
-        private Packet receiveData;
+        private Packet receivedData;
         private byte[] receiveBuffer;
 
         public void Connect()
@@ -73,8 +73,23 @@ public class Client : MonoBehaviour
 
             stream = socket.GetStream();
 
-            receiveData = new Packet();
+            receivedData = new Packet();
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+        }
+
+        public void SendData(Packet _packet)
+        {
+            try
+            {
+                if (socket != null)
+                {
+                    stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
+                }
+            }
+            catch (Exception _ex)
+            {
+                Debug.Log($"Error sending data to server via TCP: {_ex}");
+            }
         }
 
         private void ReceiveCallback(IAsyncResult _result)
@@ -91,7 +106,7 @@ public class Client : MonoBehaviour
                 byte[] _data = new byte[_byteLength];
                 Array.Copy(receiveBuffer, _data, _byteLength);
 
-                receiveData.Reset(HandleData(_data));
+                receivedData.Reset(HandleData(_data));
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
             catch (Exception)
@@ -102,22 +117,22 @@ public class Client : MonoBehaviour
 
         private bool HandleData(byte[] _data)
         {
-            int _packetLenght = 0;
+            int _packetLength = 0;
 
-            receiveData.SetBytes(_data);
+            receivedData.SetBytes(_data);
 
-            if (receiveData.UnreadLength() >= 4)
+            if (receivedData.UnreadLength() >= 4)
             {
-                _packetLenght = receiveData.ReadInt();
-                if (_packetLenght <= 0)
+                _packetLength = receivedData.ReadInt();
+                if (_packetLength <= 0)
                 {
                     return true;
                 }
             }
 
-            while (_packetLenght > 0 && _packetLenght <= receiveData.UnreadLength())
+            while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
             {
-                byte[] _packetBytes = receiveData.ReadBytes(_packetLenght);
+                byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
                     using (Packet _packet = new Packet(_packetBytes))
@@ -127,18 +142,18 @@ public class Client : MonoBehaviour
                     }
                 });
 
-                _packetLenght = 0;
-                if (receiveData.UnreadLength() >= 4)
+                _packetLength = 0;
+                if (receivedData.UnreadLength() >= 4)
                 {
-                    _packetLenght = receiveData.ReadInt();
-                    if (_packetLenght <= 0)
+                    _packetLength = receivedData.ReadInt();
+                    if (_packetLength <= 0)
                     {
                         return true;
                     }
                 }
             }
 
-            if (_packetLenght <= 1)
+            if (_packetLength <= 1)
             {
                 return true;
             }

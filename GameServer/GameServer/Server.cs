@@ -12,6 +12,14 @@ namespace GameServer
         public static int Port { get; private set; }
         public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
 
+        //Способ того какой метод использовать для обработки пакета 
+        //в зависимости от полученного id пакета обработчиком пакета
+        public delegate void PacketHandler(int _fromClient, Packet _packet);
+
+        //Словарь для отслеживания наших обработчиков пакетов 
+        public static Dictionary<int, PacketHandler> packetHandlers;
+
+
         public static TcpListener tcpListener;
 
         public static void Start(int _maxPlayers, int _port)
@@ -53,6 +61,13 @@ namespace GameServer
             {
                 clients.Add(i, new Client(i));
             }
+
+            //Инициализируем словарь в методе инициализации
+            packetHandlers = new Dictionary<int, PacketHandler>()
+            {
+                { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived }
+            };
+            Console.WriteLine("Initialized packets...");
         }
     }
 }
