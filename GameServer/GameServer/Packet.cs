@@ -9,11 +9,12 @@ namespace GameServer
     public enum ServerPackets
     {
         welcome = 1,
-        spawnPlayer,
-        playerPosition,
+        spawnPlayer = 2,
+        playerPosition = 3,
         //МОЖНО БУДЕТ УДАЛИТЬ
         playerRotation,
-        playerDisconnected
+        playerDisconnected,
+        playerData = 4 // Новый пакет
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -363,6 +364,8 @@ namespace GameServer
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
         }
+
+
         #endregion
 
         private bool disposed = false;
@@ -387,5 +390,8 @@ namespace GameServer
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+
     }
+
 }

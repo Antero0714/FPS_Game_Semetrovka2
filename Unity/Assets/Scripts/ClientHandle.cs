@@ -22,6 +22,19 @@ public class ClientHandle : MonoBehaviour
         GameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
     }
 
+    public static void PlayerData(Packet _packet)
+    {
+        int _id = _packet.ReadInt();
+        int _rating = _packet.ReadInt();
+
+        if (GameManager.players.ContainsKey(_id))
+        {
+            GameManager.players[_id].SetRating(_rating); // Устанавливаем рейтинг
+        }
+    }
+
+
+
     public static void PlayerDisconnected(Packet _packet)
     {
         int _id = _packet.ReadInt();

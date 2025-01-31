@@ -17,6 +17,9 @@ namespace GameServer
         public Player player;
         public TCP tcp;
 
+        public int rating = 0; // Добавляем рейтинг
+
+
         public Client(int _clientId)
         {
             id = _clientId;
@@ -152,19 +155,23 @@ namespace GameServer
         public void SendIntoGame(string _playerName)
         {
             player = new Player(id, _playerName, new Vector2(0, 0));
-            
-            foreach(Client _client in Server.clients.Values)
+
+            // Загружаем рейтинг из БД
+            Server.clients[id].rating = LoadPlayerRatingFromDatabase(_playerName);
+            ServerSend.SendPlayerData(id, id, Server.clients[id].rating); // Отправляем рейтинг клиенту
+
+            foreach (Client _client in Server.clients.Values)
             {
                 if (_client.player != null)
                 {
-                    if(_client.id != id)
+                    if (_client.id != id)
                     {
                         ServerSend.SpawnPlayer(id, _client.player);
                     }
                 }
             }
 
-            foreach(Client _client in Server.clients.Values)
+            foreach (Client _client in Server.clients.Values)
             {
                 if (_client.player != null)
                 {
@@ -173,19 +180,33 @@ namespace GameServer
             }
         }
 
-        private void Disconnect()
-        {
-            Console.WriteLine($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
 
-            if (player != null)
-            {
-                ServerSend.PlayerDisconnected(id);
-                Server.clients.Remove(id); // Удаляем игрока из словаря
-            }
+        private int LoadPlayerRatingFromDatabase(string username)
+        {
+            // Тут должен быть код для запроса к БД, пока заглушка
+            return 100; // Например, у всех игроков начальный рейтинг 100
+        }
+
+
+
+
+        public void Disconnect()
+        {
+            Console.WriteLine($"Игрок {id} отключился.");
+
+            ServerSend.PlayerDisconnected(id); // Отправляем клиентам инфу об отключении
 
             player = null;
             tcp.Disconnect();
+
+            // Очищаем только сокет, но оставляем ID в clients
+            Server.clients[id] = new Client(id); // Пересоздаём объект клиента, но с тем же ID
         }
+
+
+
+
+
 
     }
 }

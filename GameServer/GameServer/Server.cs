@@ -22,6 +22,7 @@ namespace GameServer
 
         public static TcpListener tcpListener;
 
+
         public static void Start(int _maxPlayers, int _port)
         {
             MaxPlayers = _maxPlayers;
@@ -43,9 +44,9 @@ namespace GameServer
             tcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
             Console.WriteLine($"Исходящее соединение от {_client.Client.RemoteEndPoint}...");
 
-            for(int i = 1; i <= MaxPlayers; i++)
+            for (int i = 0; i <= MaxPlayers; i++) // Начинаем с 0, а не с 1
             {
-                if (clients[i].tcp.socket == null)
+                if (clients.ContainsKey(i) && clients[i].tcp.socket == null)
                 {
                     clients[i].tcp.Connect(_client);
                     return;
@@ -54,6 +55,8 @@ namespace GameServer
 
             Console.WriteLine($"{_client.Client.RemoteEndPoint} безуспешное соединение: Сервер полон!");
         }
+
+
 
         private static void InitializeServerData()
         {
@@ -69,6 +72,8 @@ namespace GameServer
             };
             Console.WriteLine("Initialized packets...");
         }
+
+
     }
 }
 

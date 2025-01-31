@@ -11,7 +11,8 @@ public enum ServerPackets
     playerPosition,
     //ÌÎÆÍÎ ÁÓÄÅÒ ÓÄÀËÈÒÜ
     playerRotation,
-    playerDisconnected
+    playerDisconnected,
+    playerData = 4 // Íîâûé ïàêåò
 }
 
 /// <summary>Sent from client to server.</summary>

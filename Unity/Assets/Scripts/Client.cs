@@ -33,9 +33,10 @@ public class Client : MonoBehaviour
 
     private void Start()
     {
+        InitializeClientData(); // Добавляем инициализацию обработчиков пакетов
         tcp = new TCP();
-
     }
+
 
     private void OnApplicationQuit()
     {
@@ -146,7 +147,15 @@ public class Client : MonoBehaviour
                     using (Packet _packet = new Packet(_packetBytes))
                     {
                         int _packetId = _packet.ReadInt();
-                        packetHandlers[_packetId](_packet);
+                        Debug.Log($"Получен пакет с ID: {_packetId}"); // Логируем ID пакета
+                        if (packetHandlers.ContainsKey(_packetId))
+                        {
+                            packetHandlers[_packetId](_packet); // Обрабатываем пакет
+                        }
+                        else
+                        {
+                            Debug.LogError($"Неизвестный пакет ID: {_packetId}"); // Ошибка, если ID нет
+                        }
                     }
                 });
 
@@ -160,6 +169,7 @@ public class Client : MonoBehaviour
                     }
                 }
             }
+
 
             if (_packetLength <= 1)
             {
@@ -186,9 +196,13 @@ public class Client : MonoBehaviour
     {
         { (int)ServerPackets.welcome, ClientHandle.Welcome },
         { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
-        { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected }
+        { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
+        { (int)ServerPackets.playerData, ClientHandle.PlayerData } // если используем рейтинг
     };
+
+        Debug.Log("Инициализированы пакеты.");
     }
+
 
     private void Disconnect()
     {

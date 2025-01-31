@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,22 @@ namespace GameServer
         {
             _packet.WriteLength();
             Server.clients[_toClient].tcp.SendData(_packet);
+
+            Console.WriteLine($"Отправлен пакет клиенту {_toClient}");
         }
+
+
+        public static void SendPlayerData(int toClient, int playerId, int rating)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.playerData))
+            {
+                packet.Write(playerId);
+                packet.Write(rating);
+
+                SendTCPData(toClient, packet);
+            }
+        }
+
 
         private static void SendTCPDataAll(Packet _packet)
         {
@@ -46,6 +62,8 @@ namespace GameServer
             }
         }
 
+
+
         public static void SpawnPlayer(int _toClient, Player _player)
         {
             using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
@@ -55,11 +73,12 @@ namespace GameServer
                 _packet.Write(_player.position);
                 //МОЖНО БУДЕТ УДАЛИТЬ
                 _packet.Write(_player.rotation);
-
                 SendTCPData(_toClient, _packet);
 
             }
         }
+
+
 
         public static void PlayerDisconnected(int _playerId)
         {
