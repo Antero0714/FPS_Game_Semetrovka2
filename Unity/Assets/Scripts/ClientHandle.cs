@@ -21,4 +21,23 @@ public class ClientHandle : MonoBehaviour
 
         GameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
     }
+
+    public static void PlayerDisconnected(Packet _packet)
+    {
+        int _id = _packet.ReadInt();
+
+        if (GameManager.players.ContainsKey(_id))
+        {
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                UnityEngine.Object.Destroy(GameManager.players[_id].gameObject);
+                GameManager.players.Remove(_id);
+            });
+        }
+        else
+        {
+            Debug.LogWarning($"Попытка удалить игрока {_id}, но его нет в GameManager.players");
+        }
+    }
+
 }

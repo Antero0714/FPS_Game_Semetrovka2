@@ -177,9 +177,15 @@ namespace GameServer
         {
             Console.WriteLine($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
 
-            player = null;
+            if (player != null)
+            {
+                ServerSend.PlayerDisconnected(id);
+                Server.clients.Remove(id); // Удаляем игрока из словаря
+            }
 
+            player = null;
             tcp.Disconnect();
         }
+
     }
 }

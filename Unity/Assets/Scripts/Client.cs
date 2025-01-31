@@ -183,12 +183,11 @@ public class Client : MonoBehaviour
     private void InitializeClientData()
     {
         packetHandlers = new Dictionary<int, PacketHandler>()
-        {
-            { (int)ServerPackets.welcome, ClientHandle.Welcome },
-            { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer }
-
-        };
-        Debug.Log("Initialized packet...");
+    {
+        { (int)ServerPackets.welcome, ClientHandle.Welcome },
+        { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+        { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected }
+    };
     }
 
     private void Disconnect()
@@ -201,4 +200,6 @@ public class Client : MonoBehaviour
             Debug.Log("Disconnected from server.");
         }
     }
+
+
 }

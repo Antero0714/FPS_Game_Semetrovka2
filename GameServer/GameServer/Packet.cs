@@ -12,7 +12,8 @@ namespace GameServer
         spawnPlayer,
         playerPosition,
         //МОЖНО БУДЕТ УДАЛИТЬ
-        playerRotation
+        playerRotation,
+        playerDisconnected
     }
 
     /// <summary>Sent from client to server.</summary>
