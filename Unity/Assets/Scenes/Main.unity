@@ -1221,7 +1221,7 @@ MonoBehaviour:
   localPlayerPrefab: {fileID: 994317774420687302, guid: f1f8f8159fd77e941baf33a13f139694, type: 3}
   playerPrefab: {fileID: 994317774420687302, guid: d0f4db72175b83644a414fe9e4a61ae7, type: 3}
   playerPrefab1: {fileID: 994317774420687302, guid: ef366f60094e0c14cbca40bd3b8f8307, type: 3}
-  playerPrefab2: {fileID: 317282179960162462, guid: c85e79b060662154bbcd2ad296bd80b5, type: 3}
+  playerPrefab2: {fileID: 994317774420687302, guid: 189e7784a4e57814686c4e11738a97c7, type: 3}
 --- !u!4 &1731515873
 Transform:
   m_ObjectHideFlags: 0
