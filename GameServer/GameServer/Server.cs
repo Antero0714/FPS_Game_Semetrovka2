@@ -44,7 +44,7 @@ namespace GameServer
             tcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
             Console.WriteLine($"Исходящее соединение от {_client.Client.RemoteEndPoint}...");
 
-            for (int i = 0; i <= MaxPlayers; i++) // Начинаем с 0, а не с 1
+            for (int i = 1; i <= MaxPlayers; i++)
             {
                 if (clients.ContainsKey(i) && clients[i].tcp.socket == null)
                 {

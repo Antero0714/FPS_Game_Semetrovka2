@@ -154,23 +154,14 @@ namespace GameServer
 
         public void SendIntoGame(string _playerName)
         {
+            // Создаем игрока (например, new Player(id, _playerName, Vector2.zero))
             player = new Player(id, _playerName, new Vector2(0, 0));
 
-            // Загружаем рейтинг из БД
+            // Опционально: загрузка рейтинга
             Server.clients[id].rating = LoadPlayerRatingFromDatabase(_playerName);
-            ServerSend.SendPlayerData(id, id, Server.clients[id].rating); // Отправляем рейтинг клиенту
+            ServerSend.SendPlayerData(id, id, Server.clients[id].rating);
 
-            foreach (Client _client in Server.clients.Values)
-            {
-                if (_client.player != null)
-                {
-                    if (_client.id != id)
-                    {
-                        ServerSend.SpawnPlayer(id, _client.player);
-                    }
-                }
-            }
-
+            // Рассылаем данные о новом игроке всем клиентам
             foreach (Client _client in Server.clients.Values)
             {
                 if (_client.player != null)
@@ -181,14 +172,12 @@ namespace GameServer
         }
 
 
+
         private int LoadPlayerRatingFromDatabase(string username)
         {
             // Тут должен быть код для запроса к БД, пока заглушка
             return 100; // Например, у всех игроков начальный рейтинг 100
         }
-
-
-
 
         public void Disconnect()
         {

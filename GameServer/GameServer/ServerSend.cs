@@ -25,9 +25,12 @@ namespace GameServer
                 packet.Write(playerId);
                 packet.Write(rating);
 
+                Console.WriteLine($"[Server] Отправка рейтинга {rating} для игрока ID {playerId}");
+
                 SendTCPData(toClient, packet);
             }
         }
+
 
 
         private static void SendTCPDataAll(Packet _packet)
@@ -57,10 +60,21 @@ namespace GameServer
             {
                 _packet.Write(_msg);
                 _packet.Write(_toClient);
-
                 SendTCPData(_toClient, _packet);
             }
+
+            // Отправляем новому клиенту информацию обо всех игроках, кроме его самого
+            foreach (var client in Server.clients.Values)
+            {
+                if (client.player != null && client.player.id != _toClient)
+                {
+                    SpawnPlayer(_toClient, client.player);
+                }
+            }
+
+            Console.WriteLine($"[Server] Отправлен ID клиенту: {_toClient}");
         }
+
 
 
 
@@ -71,13 +85,12 @@ namespace GameServer
                 _packet.Write(_player.id);
                 _packet.Write(_player.username);
                 _packet.Write(_player.position);
-                //МОЖНО БУДЕТ УДАЛИТЬ
                 _packet.Write(_player.rotation);
-                SendTCPData(_toClient, _packet);
 
+                Console.WriteLine($"[Server] Отправка SpawnPlayer: игрок ID {_player.id}, Username: {_player.username} клиенту {_toClient}");
+                SendTCPData(_toClient, _packet);
             }
         }
-
 
 
         public static void PlayerDisconnected(int _playerId)
