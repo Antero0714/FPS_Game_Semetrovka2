@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "NahxyMYVEyg=",
+  "dgSpecHash": "AuUgJJExrBTbIPISyRKofhVT1iVQPVsJKt1TwsMizkhJWlYNFUqQC+TD5LCFwT3YfBQavx8ZxqD/kGAplan/WQ==",
   "success": true,
-  "projectFilePath": "D:\\Git\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
+  "projectFilePath": "D:\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\andre\\.nuget\\packages\\system.numerics.vectors\\4.6.0\\system.numerics.vectors.4.6.0.nupkg.sha512"
+    "C:\\Users\\shaba\\.nuget\\packages\\system.numerics.vectors\\4.6.0\\system.numerics.vectors.4.6.0.nupkg.sha512"
   ],
   "logs": []
 }
