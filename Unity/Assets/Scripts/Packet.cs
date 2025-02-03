@@ -7,21 +7,25 @@ using UnityEngine;
 public enum ServerPackets
 {
     welcome = 1,
-    spawnPlayer,
-    playerPosition,
-    //МОЖНО БУДЕТ УДАЛИТЬ
-    playerRotation,
-    playerDisconnected,
-    playerData = 4 // Новый пакет
+    spawnPlayer = 2,
+    playerDisconnected = 3,
+    playerData = 4,
+    playerPosition = 5,
+    playerRotation = 6,
+    drumSpinResult = 7,
+    ratingUpdate = 8,
+    letterResult = 9,
+    winAnnouncement = 10
 }
 
 /// <summary>Sent from client to server.</summary>
 public enum ClientPackets
 {
     welcomeReceived = 1,
-    playerMovement
+    playerMovement,
+    letterPressed,    // Отправка выбранной буквы с клиента
+    drumSpinResult    // Отправка результата спина барабана с клиента
 }
-
 public class Packet : IDisposable
 {
     private List<byte> buffer;

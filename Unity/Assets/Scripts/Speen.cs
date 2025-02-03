@@ -75,4 +75,26 @@ public class Speen : MonoBehaviour
 
         isCoroutine = true;
     }
+
+    public void SpinToSector(int sectorNumber)
+    {
+        float targetRotation = sectorNumber * 36; // Например, 10 секторов по 36 градусов
+        StartCoroutine(RotateWheel(targetRotation));
+    }
+
+    private IEnumerator RotateWheel(float targetRotation)
+    {
+        float duration = 2f;
+        float startRotation = transform.eulerAngles.z;
+        float time = 0;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float newRotation = Mathf.Lerp(startRotation, targetRotation, time / duration);
+            transform.eulerAngles = new Vector3(0, 0, newRotation);
+            yield return null;
+        }
+    }
+
 }

@@ -9,20 +9,26 @@ namespace GameServer
     public enum ServerPackets
     {
         welcome = 1,
-        spawnPlayer = 2,
-        playerPosition = 3,
-        //МОЖНО БУДЕТ УДАЛИТЬ
+        spawnPlayer,
+        playerPosition,
         playerRotation,
         playerDisconnected,
-        playerData = 4 // Новый пакет
+        playerData,       // Рейтинг (уже есть)
+        drumSpinResult,   // Результат спина барабана
+        ratingUpdate,     // Обновление рейтинга
+        letterResult,     // Результат нажатия буквы
+        winAnnouncement   // Победа
     }
+
 
     /// <summary>Sent from client to server.</summary>
     public enum ClientPackets
     {
         welcomeReceived = 1,
-        playerMovement
+        playerMovement,
+        letterPressed  // Новый тип, если клиент отправляет выбранную букву
     }
+
 
     public class Packet : IDisposable
     {

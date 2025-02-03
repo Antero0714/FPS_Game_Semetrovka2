@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,9 +32,7 @@ namespace GameServer
             }
         }
 
-
-
-        private static void SendTCPDataAll(Packet _packet)
+        public static void SendTCPDataAll(Packet _packet)
         {
             _packet.WriteLength();
             for (int i = 1; i <= Server.MaxPlayers; i++)
@@ -99,6 +98,53 @@ namespace GameServer
             {
                 _packet.Write(_playerId);
                 SendTCPDataAll(_packet);
+            }
+        }
+
+
+        public static void RatingUpdate(int playerId, int newRating)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.ratingUpdate))
+            {
+                packet.Write(playerId);
+                packet.Write(newRating);
+                SendTCPDataAll(packet);
+            }
+            Console.WriteLine($"[Server] Обновление рейтинга для игрока {playerId}: {newRating}");
+        }
+
+
+        public static void WinAnnouncement(int winnerId, string winnerName)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.winAnnouncement))
+            {
+                packet.Write(winnerId);
+                packet.Write(winnerName);
+                SendTCPDataAll(packet);
+            }
+            Console.WriteLine($"[Server] Объявлен победитель: {winnerName} (ID: {winnerId})");
+        }
+
+
+        public static void PlayerPosition(Player _player)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.playerPosition))
+            {
+                _packet.Write(_player.id);
+                _packet.Write(_player.position);
+
+                SendTCPDataAll(_packet);
+            }
+        }
+
+        public static void PlayerRotation(Player _player)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.playerRotation))
+            {
+                _packet.Write(_player.id);
+                _packet.Write(_player.rotation);
+
+                SendTCPDataAll(_player.id, _packet);
             }
         }
 

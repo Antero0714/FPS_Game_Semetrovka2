@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,6 +66,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"[GameManager] Игрок {_username} (ID: {_id}) успешно создан.");
     }
+
 
 
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ClientHandle : MonoBehaviour
@@ -64,5 +65,63 @@ public class ClientHandle : MonoBehaviour
             Debug.LogWarning($"Попытка удалить игрока {_id}, но его нет в GameManager.players");
         }
     }
+    public static void LetterResult(Packet _packet)
+    {
+        try
+        {
+            int playerId = _packet.ReadInt();
+            int pointsAwarded = _packet.ReadInt();
+            Debug.Log($"[Client] Результат нажатия буквы для игрока {playerId}: {pointsAwarded} очков.");
+            // Обновляем рейтинг в UI, если необходимо
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Ошибка при разборе пакета letterResult: {ex}");
+        }
+    }
 
+    public static void WinAnnouncement(Packet _packet)
+    {
+        try
+        {
+            int winnerId = _packet.ReadInt();
+            string winnerName = _packet.ReadString();
+            Debug.Log($"[Client] Победитель: {winnerName} (ID: {winnerId})");
+            WinUIManager.ShowWinnerStatic(winnerName);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Ошибка при разборе пакета winAnnouncement: {ex}");
+        }
+    }
+
+
+    public static void DrumSpinResult(Packet _packet)
+    {
+        Debug.Log("[CLIENT] Получен пакет drumSpinResult!");
+        Debug.Log($"Длина пакета: {_packet.Length()}");
+
+        int playerId = _packet.ReadInt();
+        int sectorNumber = _packet.ReadInt();
+        int points = _packet.ReadInt();
+
+        Debug.Log($"[CLIENT] drumSpinResult: {playerId}, {sectorNumber}, {points}");
+    }
+
+
+    public static void PlayerPosition(Packet packet)
+    {
+        int _id = packet.ReadInt();
+        Vector3 position = packet.ReadVector2();
+
+        GameManager.players[_id].transform.position = position;
+    }
+
+    public static void PlayerRotation(Packet packet)
+    {
+        int _id = packet.ReadInt();
+        Quaternion rotation = packet.ReadQuaternion();
+
+        GameManager.players[_id].transform.rotation = rotation;
+    }
 }

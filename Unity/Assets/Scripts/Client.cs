@@ -192,13 +192,19 @@ public class Client : MonoBehaviour
 
     private void InitializeClientData()
     {
-        packetHandlers = new Dictionary<int, PacketHandler>()
-    {
-        { (int)ServerPackets.welcome, ClientHandle.Welcome },
-        { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
-        { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
-        { (int)ServerPackets.playerData, ClientHandle.PlayerData } // если используем рейтинг
-    };
+            packetHandlers = new Dictionary<int, PacketHandler>()
+{
+    { (int)ServerPackets.welcome, ClientHandle.Welcome },
+    { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+    { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
+    { (int)ServerPackets.playerData, ClientHandle.PlayerData },
+    { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
+    { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
+    { (int)ServerPackets.drumSpinResult, ClientHandle.DrumSpinResult },
+    { (int)ServerPackets.ratingUpdate, ClientHandle.PlayerData }, // ≈сли PlayerData обновл€ет рейтинг
+    { (int)ServerPackets.letterResult, ClientHandle.LetterResult },
+    { (int)ServerPackets.winAnnouncement, ClientHandle.WinAnnouncement }
+};
 
         Debug.Log("»нициализированы пакеты.");
     }
