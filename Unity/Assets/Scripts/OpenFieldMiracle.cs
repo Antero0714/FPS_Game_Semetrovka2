@@ -120,7 +120,7 @@ public class OpenShow : MonoBehaviour
     {
         if (index >= 0 && index < InputLetters.Length && InputLetters[index] != null)
         {
-            InputLetters[index].SetActive(false); // Скрываем квадрат
+            InputLetters[index].SetActive(false); 
         }
     }
 }
