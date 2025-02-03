@@ -23,10 +23,10 @@ public class OpenLetterButton : MonoBehaviour
     private IEnumerator ShowAndDisableButton(float delay)
     {
         // Показываем букву
-        BlueScreen.SetActive(false);
+        
 
         yield return new WaitForSeconds(delay);
-
+        BlueScreen.SetActive(false);
         // Делаем кнопку неактивной после задержки
         button.interactable = false;
         button.gameObject.SetActive(false);

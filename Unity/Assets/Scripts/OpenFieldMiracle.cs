@@ -9,6 +9,7 @@ public class OpenShow : MonoBehaviour
     public GameObject Points;
     public GameObject Assistant;
     public GameObject Yakubovich;
+    public GameObject Quetions;
 
     public GameObject[] InputLetters;
     public GameObject[] AnswerLetters;
@@ -35,13 +36,17 @@ public class OpenShow : MonoBehaviour
         {
             Points.SetActive(false); // Скрываем объект при старте
         }
-        if (Points != null)
+        if (Assistant != null)
         {
             Assistant.SetActive(false); // Скрываем объект при старте
         }
-        if (Points != null)
+        if (Yakubovich != null)
         {
             Yakubovich.SetActive(false); // Скрываем объект при старте
+        }
+        if (Quetions != null)
+        {
+            Quetions.SetActive(false); // Скрываем объект при старте
         }
 
         for (int i = 0; i < InputLetters.Length; i++)
@@ -95,6 +100,11 @@ public class OpenShow : MonoBehaviour
         {
             bool isActive = Yakubovich.activeSelf;
             Yakubovich.SetActive(!isActive); // Переключаем видимость
+        }
+        if (Quetions != null)
+        {
+            bool isActive = Quetions.activeSelf;
+            Quetions.SetActive(!isActive); // Переключаем видимость
         }
 
         for (int i = 0; i < InputLetters.Length; i++)
