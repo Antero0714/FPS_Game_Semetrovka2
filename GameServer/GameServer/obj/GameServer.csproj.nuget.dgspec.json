@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Miracles\\GameServer\\GameServer\\GameServer.csproj": {}
+    "D:\\Git\\Miracles\\GameServer\\GameServer\\GameServer.csproj": {}
   },
   "projects": {
-    "D:\\Miracles\\GameServer\\GameServer\\GameServer.csproj": {
+    "D:\\Git\\Miracles\\GameServer\\GameServer\\GameServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
+        "projectUniqueName": "D:\\Git\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
         "projectName": "GameServer",
-        "projectPath": "D:\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
-        "packagesPath": "C:\\Users\\shaba\\.nuget\\packages\\",
-        "outputPath": "D:\\Miracles\\GameServer\\GameServer\\obj\\",
+        "projectPath": "D:\\Git\\Miracles\\GameServer\\GameServer\\GameServer.csproj",
+        "packagesPath": "C:\\Users\\andre\\.nuget\\packages\\",
+        "outputPath": "D:\\Git\\Miracles\\GameServer\\GameServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "D:\\Program Files\\Microsoft VS General\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\shaba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\andre\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -71,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
