@@ -6,7 +6,7 @@
 
 1. **Склонировать репозиторий** к себе на ПК:
    ```sh
-   git clone https://github.com/your-repo/miracles.git
+   https://github.com/Antero0714/Miracles.git
    ```
 
 2. **Запустить проект Unity** при помощи Unity Hub.
