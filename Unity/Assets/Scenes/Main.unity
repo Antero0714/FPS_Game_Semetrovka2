@@ -4653,17 +4653,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prizeText:
   - 50
-  - "\u04452"
+  - 300
   - 100
-  - "\u0428\u0430\u043D\u0441"
+  - 200
   - 150
   - 200
-  - "\u041F\u0440\u0438\u0437"
+  - 300
   - 250
   - 300
-  - "\u041A\u0440\u0443\u0442\u0438\u0442\u0435"
+  - 300
   - 350
-  - "\u0431\u0443\u043A\u0432\u0443"
+  - 300
   winText: {fileID: 429714992}
   section: 12
   angleSpeed: 10
