@@ -12,16 +12,19 @@ public class ClientSend : MonoBehaviour
     /// Отправляет результат спина барабана на сервер.
     /// </summary>
     /// <param name="pointsAwarded">Начисленные очки (например, 500).</param>
-    public static void SendDrumSpinResult(int playerId, int sectorNumber, int points)
+    public static void SendDrumSpinResult(int sectorNumber, int points)
     {
         using (Packet packet = new Packet((int)ClientPackets.drumSpinResult))
         {
-            packet.Write(playerId);
+            packet.Write(Client.instance.myId); // Отправляем свой ID
             packet.Write(sectorNumber);
             packet.Write(points);
-            SendTCPData(packet);
+            Client.instance.tcp.SendData(packet);
         }
+
+        Debug.Log($"[Client] Отправлен drumSpinResult: ID={Client.instance.myId}, sector={sectorNumber}, points={points}");
     }
+
 
     public void SendDrumSpinRequest()
     {

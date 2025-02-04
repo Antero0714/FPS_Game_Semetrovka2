@@ -87,14 +87,22 @@ public class ClientHandle : MonoBehaviour
         Debug.Log($"[Client] Победитель: {winnerName} (ID: {winnerId})");
         WinUIManager.ShowWinnerStatic(winnerName);
     }
-
     public static void DrumSpinResult(Packet _packet)
     {
         int playerId = _packet.ReadInt();
         int sectorNumber = _packet.ReadInt();
         int points = _packet.ReadInt();
+
         Debug.Log($"[Client] drumSpinResult: playerId={playerId}, sector={sectorNumber}, points={points}");
-        // Здесь вызывай нужные методы для синхронизации (например, чтобы анимация барабана запускалась у всех)
+
+        foreach (var player in GameManager.players.Values)
+        {
+            Speen speen = player.GetComponent<Speen>();
+            if (speen != null)
+            {
+                speen.SpinToSector(sectorNumber);
+            }
+        }
     }
 
     public static void DrumSpinRequest(Packet _packet)

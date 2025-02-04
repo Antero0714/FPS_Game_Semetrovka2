@@ -94,7 +94,7 @@ public class Speen : MonoBehaviour
             return;
         }
 
-        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult)) // Теперь ошибка не должна появляться
+        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult))
         {
             packet.Write(Client.instance.myId); // ID игрока
             packet.Write(sectorNumber); // Номер сектора
@@ -103,4 +103,29 @@ public class Speen : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Метод для синхронизации вращения у всех клиентов по данным с сервера.
+    /// </summary>
+    public void SpinToSector(int sectorNumber)
+    {
+        float targetRotation = sectorNumber * totalAngle;
+        StartCoroutine(RotateWheel(targetRotation));
+    }
+
+    private IEnumerator RotateWheel(float targetRotation)
+    {
+        float duration = 1.5f; // Время вращения
+        float startRotation = transform.eulerAngles.z;
+        float time = 0;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float newRotation = Mathf.Lerp(startRotation, targetRotation, time / duration);
+            transform.eulerAngles = new Vector3(0, 0, newRotation);
+            yield return null;
+        }
+
+        transform.eulerAngles = new Vector3(0, 0, targetRotation);
+    }
 }

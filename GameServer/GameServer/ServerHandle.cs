@@ -28,16 +28,33 @@ namespace GameServer
             int _clientIdCheck = _packet.ReadInt();
             string _username = _packet.ReadString();
 
-            Console.WriteLine($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected successfully and is now player {_fromClient}. ID: {_clientIdCheck}");
+            Console.WriteLine($"[Server] Игрок {_fromClient} подключился как {_username}");
+
             if (_fromClient != _clientIdCheck)
             {
-                Console.WriteLine($"[Warning] Player \"{_username}\" (ID: {_fromClient}) assumed wrong client ID ({_clientIdCheck})!");
+                Console.WriteLine($"[Warning] ID клиента не совпадает! Ожидалось {_fromClient}, а получено {_clientIdCheck}");
             }
-            // Создаем объект игрока на сервере
+
+            if (Server.clients[_fromClient].player != null)
+            {
+                Console.WriteLine($"[Server] Ошибка! У игрока {_fromClient} уже есть объект Player! Почему он пересоздаётся?");
+            }
+
+            // **Создаём игрока**
             Server.clients[_fromClient].player = new Player(_fromClient, _username, new Vector2(0, 0));
-            // После создания игрока вызываем метод, который рассылает данные о новом игроке всем клиентам
-            Server.clients[_fromClient].SendIntoGame(_username);
+
+            if (Server.clients[_fromClient].player == null)
+            {
+                Console.WriteLine($"[Server] КРИТИЧЕСКАЯ ОШИБКА! Игрок {_fromClient} НЕ СОЗДАЛСЯ!");
+            }
+            else
+            {
+                Console.WriteLine($"[Server] Игрок {_fromClient} успешно создан!");
+            }
         }
+
+
+
 
         // Обработка запроса на вращение барабана (drumSpinRequest)
         public static void DrumSpinRequest(int _fromClient, Packet _packet)
@@ -60,20 +77,24 @@ namespace GameServer
         // Обработка пакета drumSpinResult (если клиент посылает результат, хотя обычно сервер генерирует результат)
         public static void DrumSpinResult(int _fromClient, Packet _packet)
         {
-            int playerId = _packet.ReadInt();
+            int playerId = _fromClient; // ID клиента, который отправил пакет
             int sectorNumber = _packet.ReadInt();
             int points = _packet.ReadInt();
-            Console.WriteLine($"[Server] DrumSpinResult received from player {playerId}: sector {sectorNumber}, points {points}");
 
-            if (Server.clients.TryGetValue(playerId, out Client client) && client.player != null)
+
+            Console.WriteLine($"[Server] Проверка игрока: {playerId}");
+
+            if (!Server.clients.ContainsKey(playerId))
             {
-                client.player.SetDrumResult(sectorNumber);
-                client.player.AddScore(points);
-                ServerSend.RatingUpdate(playerId, client.player.score);
+                Console.WriteLine($"[Server] Ошибка: Игрок {playerId} отсутствует в Server.clients!");
             }
-            else
+
+            if (Server.clients.TryGetValue(playerId, out Client client))
             {
-                Console.WriteLine($"[Server] Error: Player {playerId} not found.");
+                if (client.player == null)
+                {
+                    Console.WriteLine($"[Server] Ошибка: client.player == null у {playerId}!");
+                }
             }
         }
 

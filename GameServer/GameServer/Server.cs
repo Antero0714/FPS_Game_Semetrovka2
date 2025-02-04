@@ -97,11 +97,21 @@ namespace GameServer
 
             if (Server.clients.TryGetValue(playerId, out Client client))
             {
-                client.player.SetDrumResult(sectorNumber);
-                client.player.AddScore(points);
-
-                // Отправляем обновленные данные всем игрокам
-                ServerSend.RatingUpdate(playerId, client.player.score);
+                if (client.player == null)
+                {
+                    Console.WriteLine($"[Server] Ошибка: client.player == null у игрока {playerId}!");
+                }
+                else
+                {
+                    Console.WriteLine($"[Server] Найден игрок {playerId}, обновляем результат барабана.");
+                    client.player.SetDrumResult(sectorNumber);
+                    client.player.AddScore(points);
+                    ServerSend.RatingUpdate(playerId, client.player.score);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[Server] Ошибка: Игрок {playerId} не найден в Server.clients! Все ID игроков: {string.Join(", ", Server.clients.Keys)}");
             }
         }
     }
