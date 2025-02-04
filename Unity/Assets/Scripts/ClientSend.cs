@@ -23,6 +23,26 @@ public class ClientSend : MonoBehaviour
         }
     }
 
+    public void SendDrumSpinRequest()
+    {
+        if (Client.instance == null)
+        {
+            Debug.LogError("Client.instance is null!");
+            return;
+        }
+
+        if (Client.instance.tcp == null)
+        {
+            Debug.LogError("Client.instance.tcp is null!");
+            return;
+        }
+
+        using (Packet packet = new Packet((int)ClientPackets.drumSpinRequest))
+        {
+            packet.Write(Client.instance.myId); // ID игрока
+            Client.instance.tcp.SendData(packet);
+        }
+    }
 
     /// <summary>
     /// Отправляет выбранную букву на сервер.
@@ -50,7 +70,6 @@ public class ClientSend : MonoBehaviour
             Client.instance.tcp.SendData(_packet);
         }
     }
-
 
 
 }

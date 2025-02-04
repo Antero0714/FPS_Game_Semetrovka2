@@ -193,18 +193,18 @@ public class Client : MonoBehaviour
     private void InitializeClientData()
     {
         packetHandlers = new Dictionary<int, PacketHandler>()
-        {
-            { (int)ServerPackets.welcome, ClientHandle.Welcome },
-            { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
-            { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
-            { (int)ServerPackets.playerData, ClientHandle.PlayerData },
-            { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
-            { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
-            { (int)ServerPackets.drumSpinResult, ClientHandle.DrumSpinResult },
-            { (int)ServerPackets.ratingUpdate, ClientHandle.PlayerData }, // Если PlayerData обновляет рейтинг
-            { (int)ServerPackets.letterResult, ClientHandle.LetterResult },
-            { (int)ServerPackets.winAnnouncement, ClientHandle.WinAnnouncement }
-        };
+    {
+        { (int)ServerPackets.welcome, ClientHandle.Welcome },
+        { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+        { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
+        { (int)ServerPackets.playerData, ClientHandle.PlayerData },
+        { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
+        { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
+        { (int)ServerPackets.drumSpinResult, ClientHandle.DrumSpinResult },
+        { (int)ServerPackets.ratingUpdate, ClientHandle.PlayerData }, // Если PlayerData обновляет рейтинг
+        { (int)ServerPackets.letterResult, ClientHandle.LetterResult },
+        { (int)ServerPackets.winAnnouncement, ClientHandle.WinAnnouncement }
+    };
 
         Debug.Log("Инициализированы пакеты.");
     }

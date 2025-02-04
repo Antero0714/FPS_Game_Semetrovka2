@@ -94,7 +94,7 @@ public class Speen : MonoBehaviour
             return;
         }
 
-        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult)) // Используйте drumSpinRequest
+        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult)) // Теперь ошибка не должна появляться
         {
             packet.Write(Client.instance.myId); // ID игрока
             packet.Write(sectorNumber); // Номер сектора
@@ -102,4 +102,5 @@ public class Speen : MonoBehaviour
             Client.instance.tcp.SendData(packet);
         }
     }
+
 }

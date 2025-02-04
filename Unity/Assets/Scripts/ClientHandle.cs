@@ -88,24 +88,49 @@ public class ClientHandle : MonoBehaviour
         WinUIManager.ShowWinnerStatic(winnerName);
     }
 
-
-    public static void DrumSpinResult(Packet packet)
+    public static void DrumSpinResult(Packet _packet)
     {
-        int playerId = packet.ReadInt();
-        int sectorNumber = packet.ReadInt();
-        int points = packet.ReadInt();
-
+        int playerId = _packet.ReadInt();
+        int sectorNumber = _packet.ReadInt();
+        int points = _packet.ReadInt();
         Debug.Log($"[Client] drumSpinResult: playerId={playerId}, sector={sectorNumber}, points={points}");
+        // Здесь вызывай нужные методы для синхронизации (например, чтобы анимация барабана запускалась у всех)
+    }
 
+    public static void DrumSpinRequest(Packet _packet)
+    {
+        int playerId = _packet.ReadInt(); // Читаем ID игрока
+        Debug.Log($"[Client] Получен запрос на спин от игрока {playerId}");
+
+        // Здесь можно запустить анимацию на клиенте
         if (GameManager.players.TryGetValue(playerId, out PlayerManager player))
         {
-            player.SetRating(player.GetRating() + points);
+            player.GetComponent<Speen>().StartSpin();
         }
     }
 
 
 
+    public void SendDrumSpinRequest()
+    {
+        if (Client.instance == null)
+        {
+            Debug.LogError("Client.instance is null!");
+            return;
+        }
 
+        if (Client.instance.tcp == null)
+        {
+            Debug.LogError("Client.instance.tcp is null!");
+            return;
+        }
+
+        using (Packet packet = new Packet((int)ClientPackets.drumSpinRequest))
+        {
+            packet.Write(Client.instance.myId); // ID игрока
+            Client.instance.tcp.SendData(packet);
+        }
+    }
 
     public static void PlayerPosition(Packet packet)
     {

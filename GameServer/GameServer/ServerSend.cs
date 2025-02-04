@@ -155,15 +155,16 @@ namespace GameServer
         {
             using (Packet packet = new Packet((int)ServerPackets.drumSpinResult))
             {
-                packet.Write(playerId);
-                packet.Write(sectorNumber);
-                packet.Write(points);
+                packet.Write(playerId);      // ID игрока, который крутил барабан
+                packet.Write(sectorNumber);  // Номер выпавшего сектора
+                packet.Write(points);        // Начисленные очки
 
                 Console.WriteLine($"[Server] Отправка drumSpinResult: playerId={playerId}, sector={sectorNumber}, points={points}");
 
-                SendTCPDataAll(packet);
+                ServerSend.SendTCPDataAll(packet);  // Отправка всем клиентам
             }
         }
+
 
 
 

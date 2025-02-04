@@ -9,26 +9,27 @@ namespace GameServer
     public enum ServerPackets
     {
         welcome = 1,
-        spawnPlayer,
-        playerPosition,
-        playerRotation,
-        playerDisconnected,
-        playerData,       // Рейтинг (уже есть)
-        drumSpinResult,   // Результат спина барабана
-        ratingUpdate,     // Обновление рейтинга
-        letterResult,     // Результат нажатия буквы
-        winAnnouncement   // Победа
+        spawnPlayer = 2,
+        playerDisconnected = 3,
+        playerData = 4,
+        playerPosition = 5,
+        playerRotation = 6,
+        drumSpinResult = 7,
+        ratingUpdate = 8,
+        letterResult = 9,
+        winAnnouncement = 10
     }
-
 
     /// <summary>Sent from client to server.</summary>
     public enum ClientPackets
     {
         welcomeReceived = 1,
-        playerMovement,
-        letterPressed,
-        drumSpinRequest  // Запрос на вращение барабана
+        playerMovement,   // 2
+        letterPressed,    // 3
+        drumSpinRequest,  // 4
+        drumSpinResult    // 5 – добавьте это значение
     }
+
 
 
 

@@ -24,8 +24,12 @@ public enum ClientPackets
     welcomeReceived = 1,
     playerMovement,
     letterPressed,    // Отправка выбранной буквы с клиента
-    drumSpinResult    // Отправка результата спина барабана с клиента
+    drumSpinRequest,  // Запрос на вращение барабана с клиента
+    drumSpinResult,
+
 }
+
+
 public class Packet : IDisposable
 {
     private List<byte> buffer;

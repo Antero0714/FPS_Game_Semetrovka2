@@ -63,12 +63,26 @@ namespace GameServer
                 clients.Add(i, new Client(i));
             }
 
-            // Инициализируем словарь в методе инициализации
             packetHandlers = new Dictionary<int, PacketHandler>()
-    {
-        { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived },
-        { (int)ClientPackets.drumSpinRequest, ServerHandle.HandleDrumSpinRequest } // Добавьте обработчик для drumSpinRequest
-    };
+{
+    { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived },
+    { (int)ClientPackets.playerMovement, ServerHandle.PlayerMovement },
+    { (int)ClientPackets.letterPressed, ServerHandle.LetterPressed },
+    { (int)ClientPackets.drumSpinRequest, ServerHandle.DrumSpinRequest },
+    { (int)ClientPackets.drumSpinResult, ServerHandle.DrumSpinResult }
+};
+
+            // ОТДЕЛЬНО добавьте ServerPackets ТОЛЬКО в клиенте
+            if (!packetHandlers.ContainsKey((int)ServerPackets.playerPosition))
+            {
+                packetHandlers.Add((int)ServerPackets.playerPosition, ServerHandle.PlayerPosition);
+            }
+
+            if (!packetHandlers.ContainsKey((int)ServerPackets.playerRotation))
+            {
+                packetHandlers.Add((int)ServerPackets.playerRotation, ServerHandle.PlayerRotation);
+            }
+    
             Console.WriteLine("Initialized packets...");
         }
 
