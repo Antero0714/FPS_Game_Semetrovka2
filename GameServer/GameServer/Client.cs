@@ -19,12 +19,12 @@ namespace GameServer
 
         public int rating = 0; // Добавляем рейтинг
 
-
         public Client(int _clientId)
         {
             id = _clientId;
             tcp = new TCP(id);
         }
+
         public class TCP
         {
             public TcpClient socket;
@@ -33,6 +33,7 @@ namespace GameServer
             private NetworkStream stream;
             private Packet receivedData;
             private byte[] receiveBuffer;
+
             public TCP(int _id)
             {
                 id = _id;
@@ -52,7 +53,6 @@ namespace GameServer
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
                 ServerSend.Welcome(id, "Добро пожаловать на сервер");
-                
             }
 
             public void SendData(Packet _packet)
@@ -61,12 +61,12 @@ namespace GameServer
                 {
                     if (socket != null)
                     {
+                        _packet.WriteLength(); // Добавляем длину пакета
                         stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
                     }
                 }
                 catch (Exception _ex)
                 {
-
                     Console.WriteLine($"Ошибка отправки данных игроку {id} via TCP: {_ex}");
                 }
             }
@@ -88,7 +88,7 @@ namespace GameServer
                     receivedData.Reset(HandleData(_data));
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
-                catch(Exception _ex)
+                catch (Exception _ex)
                 {
                     Console.WriteLine($"Error receiving TCP data {_ex}");
                     Server.clients[id].Disconnect();
@@ -97,22 +97,22 @@ namespace GameServer
 
             private bool HandleData(byte[] _data)
             {
-                int _packetLenght = 0;
+                int _packetLength = 0;
 
                 receivedData.SetBytes(_data);
 
                 if (receivedData.UnreadLength() >= 4)
                 {
-                    _packetLenght = receivedData.ReadInt();
-                    if (_packetLenght <= 0)
+                    _packetLength = receivedData.ReadInt();
+                    if (_packetLength <= 0)
                     {
                         return true;
                     }
                 }
 
-                while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
+                while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
-                    byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
+                    byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
                     ThreadManager.ExecuteOnMainThread(() =>
                     {
                         using (Packet _packet = new Packet(_packetBytes))
@@ -122,18 +122,18 @@ namespace GameServer
                         }
                     });
 
-                    _packetLenght = 0;
+                    _packetLength = 0;
                     if (receivedData.UnreadLength() >= 4)
                     {
-                        _packetLenght = receivedData.ReadInt();
-                        if (_packetLenght <= 0)
+                        _packetLength = receivedData.ReadInt();
+                        if (_packetLength <= 0)
                         {
                             return true;
                         }
                     }
                 }
 
-                if (_packetLenght <= 1)
+                if (_packetLength <= 1)
                 {
                     return true;
                 }
@@ -171,8 +171,6 @@ namespace GameServer
             }
         }
 
-
-
         private int LoadPlayerRatingFromDatabase(string username)
         {
             // Тут должен быть код для запроса к БД, пока заглушка
@@ -191,11 +189,5 @@ namespace GameServer
             // Очищаем только сокет, но оставляем ID в clients
             Server.clients[id] = new Client(id); // Пересоздаём объект клиента, но с тем же ID
         }
-
-
-
-
-
-
     }
 }

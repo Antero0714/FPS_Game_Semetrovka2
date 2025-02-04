@@ -20,7 +20,6 @@ namespace GameServer
                 Console.WriteLine($"Player \"{_username}\" (ID: {_fromClient}) has asumed the wrong client ID ({_clientIdCheck})!");
             }
             Server.clients[_fromClient].SendIntoGame(_username);
-
         }
         public static void DrumSpinResult(int playerId, int sectorNumber, int points)
         {
@@ -30,34 +29,30 @@ namespace GameServer
                 packet.Write(sectorNumber);
                 packet.Write(points);
 
-                ServerSend.SendTCPDataAll(packet); // Исправленный вызов метода
+                Console.WriteLine($"[Server] Отправка drumSpinResult: playerId={playerId}, sector={sectorNumber}, points={points}, пакет размером {packet.Length()} байт");
+
+                ServerSend.SendTCPDataAll(packet);
             }
         }
 
 
-
-
         public static void LetterPressed(int _fromClient, Packet _packet)
         {
-            int playerId = _fromClient; // или _packet.ReadInt(), если отправляется явно
-            char letter = (char)_packet.ReadInt(); // можно передавать как int (код символа) или как string и брать первый символ
+            int playerId = _fromClient;
+            char letter = (char)_packet.ReadInt();
 
             Console.WriteLine($"[Server] Игрок {playerId} нажал букву {letter}");
 
-            // Допустим, у нас правильный ответ – буква 'С' (пример, можно задать набор)
             bool isCorrect = ("СКИФЫ".Contains(letter.ToString()));
 
             int pointsAwarded = isCorrect ? 500 : 0;
 
-            // Обновляем рейтинг для игрока, если буква правильная
             if (isCorrect && Server.clients.ContainsKey(playerId) && Server.clients[playerId].player != null)
             {
                 Server.clients[playerId].rating += pointsAwarded;
-                // Отправляем обновление рейтинга всем клиентам
                 ServerSend.RatingUpdate(playerId, Server.clients[playerId].rating);
             }
 
-            // Рассылаем результат нажатия буквы (letterResult) всем клиентам
             using (Packet packet = new Packet((int)ServerPackets.letterResult))
             {
                 packet.Write(playerId);
@@ -65,14 +60,76 @@ namespace GameServer
                 ServerSend.SendTCPDataAll(packet);
             }
 
-            // Если общее число правильных (например, глобальный счёт) достигло 5, объявляем победителя.
-            // Здесь можно реализовать глобальный счет или проверять рейтинг.
-            // Например, если рейтинг игрока превысил порог, считаем его победителем:
-            // if (Server.clients[playerId].rating >= threshold) { ... }
+            // Проверка победы
+            if (Server.clients[playerId].rating >= 2500) // Пример: 5 правильных букв по 500 очков
+            {
+                ServerSend.WinAnnouncement(playerId, Server.clients[playerId].player.username);
+            }
         }
 
 
+        public static void HandleDrumSpin(int fromClient, Packet packet)
+        {
+            int playerId = packet.ReadInt();
+            int sectorNumber = packet.ReadInt();
+            int points = packet.ReadInt();
 
+            Console.WriteLine($"[Server] Игрок {playerId} запустил барабан, сектор: {sectorNumber}, очки: {points}");
+
+            // Обновляем состояние игрока
+            if (Server.clients.TryGetValue(playerId, out Client client))
+            {
+                client.player.SetDrumResult(sectorNumber);
+                client.player.AddScore(points);
+
+                // Отправляем обновленные данные всем игрокам
+                ServerSend.RatingUpdate(playerId, client.player.score);
+            }
+        }
+        public static void HandleDrumSpinResult(int fromClient, Packet packet)
+        {
+            int playerId = packet.ReadInt();
+            int sectorNumber = packet.ReadInt();
+            int points = packet.ReadInt();
+
+            Console.WriteLine($"[Server] Игрок {playerId} выбил сектор {sectorNumber} и получил {points} очков!");
+
+            if (Server.clients.TryGetValue(playerId, out Client client))
+            {
+                client.player.SetDrumResult(sectorNumber);
+                client.player.AddScore(points);
+
+                // Отправляем обновленные данные всем игрокам
+                ServerSend.RatingUpdate(playerId, client.player.score);
+            }
+        }
+        public static void HandleLetterPressed(int fromClient, Packet packet)
+        {
+            int playerId = packet.ReadInt();
+            char letter = packet.ReadChar();
+
+            if (Server.clients.TryGetValue(playerId, out Client client))
+            {
+                // Проверяем, правильная ли буква
+                bool isCorrect = "СКИФЫ".Contains(letter.ToString());
+
+                if (isCorrect)
+                {
+                    client.player.AddOpenedLetter(letter);
+                    client.player.IncrementCorrectLetters();
+                    client.player.AddScore(500); // Начисляем очки
+
+                    // Отправляем обновленные данные всем игрокам
+                    ServerSend.RatingUpdate(playerId, client.player.score);
+
+                    // Проверяем, выиграл ли игрок
+                    if (client.player.correctLettersCount >= 5)
+                    {
+                        ServerSend.WinAnnouncement(playerId, client.player.username);
+                    }
+                }
+            }
+        }
 
 
     }

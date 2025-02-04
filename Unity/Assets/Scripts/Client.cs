@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System;
 using System.Collections.Generic;
+using GameServer;
 
 public class Client : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class Client : MonoBehaviour
         }
         else if (instance != this)
         {
-            Debug.Log("Соединение уже сущесвтеует, чужой объект уничтожен");
+            Debug.Log("Соединение уже существует, чужой объект уничтожен");
             Destroy(this);
         }
     }
@@ -37,13 +38,12 @@ public class Client : MonoBehaviour
         tcp = new TCP();
     }
 
-
     private void OnApplicationQuit()
     {
         Disconnect();
     }
 
-    public void ConnecToServer()
+    public void ConnectToServer()
     {
         InitializeClientData();
 
@@ -92,6 +92,7 @@ public class Client : MonoBehaviour
             {
                 if (socket != null)
                 {
+                    _packet.WriteLength(); // Добавляем длину пакета
                     stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
                 }
             }
@@ -170,7 +171,6 @@ public class Client : MonoBehaviour
                 }
             }
 
-
             if (_packetLength <= 1)
             {
                 return true;
@@ -192,23 +192,22 @@ public class Client : MonoBehaviour
 
     private void InitializeClientData()
     {
-            packetHandlers = new Dictionary<int, PacketHandler>()
-{
-    { (int)ServerPackets.welcome, ClientHandle.Welcome },
-    { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
-    { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
-    { (int)ServerPackets.playerData, ClientHandle.PlayerData },
-    { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
-    { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
-    { (int)ServerPackets.drumSpinResult, ClientHandle.DrumSpinResult },
-    { (int)ServerPackets.ratingUpdate, ClientHandle.PlayerData }, // Если PlayerData обновляет рейтинг
-    { (int)ServerPackets.letterResult, ClientHandle.LetterResult },
-    { (int)ServerPackets.winAnnouncement, ClientHandle.WinAnnouncement }
-};
+        packetHandlers = new Dictionary<int, PacketHandler>()
+        {
+            { (int)ServerPackets.welcome, ClientHandle.Welcome },
+            { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+            { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
+            { (int)ServerPackets.playerData, ClientHandle.PlayerData },
+            { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
+            { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
+            { (int)ServerPackets.drumSpinResult, ClientHandle.DrumSpinResult },
+            { (int)ServerPackets.ratingUpdate, ClientHandle.PlayerData }, // Если PlayerData обновляет рейтинг
+            { (int)ServerPackets.letterResult, ClientHandle.LetterResult },
+            { (int)ServerPackets.winAnnouncement, ClientHandle.WinAnnouncement }
+        };
 
         Debug.Log("Инициализированы пакеты.");
     }
-
 
     private void Disconnect()
     {
@@ -220,6 +219,4 @@ public class Client : MonoBehaviour
             Debug.Log("Disconnected from server.");
         }
     }
-
-
 }

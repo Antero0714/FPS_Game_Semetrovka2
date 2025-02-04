@@ -1,15 +1,15 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 public class OpenLetterButton : MonoBehaviour
 {
     public GameObject BlueScreen;
-    private Button button; // Ссылка на кнопку
+    private Button button;
 
     private void Start()
     {
-        button = GetComponent<Button>(); // Получаем компонент кнопки
+        button = GetComponent<Button>();
     }
 
     public void ShowLetter()
@@ -17,17 +17,27 @@ public class OpenLetterButton : MonoBehaviour
         if (BlueScreen != null && button != null)
         {
             StartCoroutine(ShowAndDisableButton(0.3f));
+
+            // Отправляем на сервер информацию о нажатой букве
+            char letter = button.GetComponentInChildren<Text>().text[0]; // Получаем букву
+            SendLetterToServer(letter);
+        }
+    }
+
+    private void SendLetterToServer(char letter)
+    {
+        using (Packet packet = new Packet((int)ClientPackets.letterPressed))
+        {
+            packet.Write(Client.instance.myId); // ID игрока
+            packet.Write(letter); // Буква
+            Client.instance.tcp.SendData(packet);
         }
     }
 
     private IEnumerator ShowAndDisableButton(float delay)
     {
-        // Показываем букву
-        
-
         yield return new WaitForSeconds(delay);
         BlueScreen.SetActive(false);
-        // Делаем кнопку неактивной после задержки
         button.interactable = false;
         button.gameObject.SetActive(false);
     }

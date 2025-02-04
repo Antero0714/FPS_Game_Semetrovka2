@@ -1,7 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI; // Добавляем для работы с UI
+using UnityEngine.UI;
 
 public class Speen : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class Speen : MonoBehaviour
     [SerializeField] private int angleSpeed;
     [SerializeField] private int minTime;
     [SerializeField] private int maxTime;
-    [SerializeField] private Button spinButton; // КНОПКА
+    [SerializeField] private Button spinButton;
 
     private void Start()
     {
@@ -31,7 +31,7 @@ public class Speen : MonoBehaviour
             return;
         }
 
-        spinButton.onClick.AddListener(StartSpin); // Привязываем метод к кнопке
+        spinButton.onClick.AddListener(StartSpin);
     }
 
     public void StartSpin()
@@ -73,28 +73,33 @@ public class Speen : MonoBehaviour
 
         Debug.Log($"Финальный угол: {finalAngle}, Сектор: {closestSectionIndex}, Приз: {prizeText[closestSectionIndex]}");
 
+        // Отправляем результат на сервер
+        int points = int.Parse(prizeText[closestSectionIndex]); // Предположим, что prizeText содержит очки
+        SendDrumResultToServer(closestSectionIndex, points);
+
         isCoroutine = true;
     }
 
-    public void SpinToSector(int sectorNumber)
+    public void SendDrumResultToServer(int sectorNumber, int points)
     {
-        float targetRotation = sectorNumber * 36; // Например, 10 секторов по 36 градусов
-        StartCoroutine(RotateWheel(targetRotation));
-    }
-
-    private IEnumerator RotateWheel(float targetRotation)
-    {
-        float duration = 2f;
-        float startRotation = transform.eulerAngles.z;
-        float time = 0;
-
-        while (time < duration)
+        if (Client.instance == null)
         {
-            time += Time.deltaTime;
-            float newRotation = Mathf.Lerp(startRotation, targetRotation, time / duration);
-            transform.eulerAngles = new Vector3(0, 0, newRotation);
-            yield return null;
+            Debug.LogError("Client.instance is null!");
+            return;
+        }
+
+        if (Client.instance.tcp == null)
+        {
+            Debug.LogError("Client.instance.tcp is null!");
+            return;
+        }
+
+        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult)) // Используйте drumSpinRequest
+        {
+            packet.Write(Client.instance.myId); // ID игрока
+            packet.Write(sectorNumber); // Номер сектора
+            packet.Write(points); // Очки
+            Client.instance.tcp.SendData(packet);
         }
     }
-
 }

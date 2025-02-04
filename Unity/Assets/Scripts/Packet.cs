@@ -7,15 +7,15 @@ using UnityEngine;
 public enum ServerPackets
 {
     welcome = 1,
-    spawnPlayer = 2,
-    playerDisconnected = 3,
-    playerData = 4,
-    playerPosition = 5,
-    playerRotation = 6,
-    drumSpinResult = 7,
-    ratingUpdate = 8,
-    letterResult = 9,
-    winAnnouncement = 10
+    spawnPlayer,
+    playerDisconnected,
+    playerData,
+    playerPosition,
+    playerRotation,
+    drumSpinResult,
+    ratingUpdate,
+    letterResult,
+    winAnnouncement
 }
 
 /// <summary>Sent from client to server.</summary>
@@ -256,20 +256,37 @@ public class Packet : IDisposable
     /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
     public int ReadInt(bool _moveReadPos = true)
     {
+        Console.WriteLine($"[Packet] Читаем int: текущий readPos={readPos}, UnreadLength={UnreadLength()}");
+
         if (buffer.Count > readPos)
         {
-            // If there are unread bytes
-            int _value = BitConverter.ToInt32(readableBuffer, readPos); // Convert the bytes to an int
+            int _value = BitConverter.ToInt32(readableBuffer, readPos);
             if (_moveReadPos)
             {
-                // If _moveReadPos is true
-                readPos += 4; // Increase readPos by 4
+                readPos += 4;
             }
-            return _value; // Return the int
+            return _value;
         }
         else
         {
             throw new Exception("Could not read value of type 'int'!");
+        }
+    }
+
+    public char ReadChar(bool _moveReadPos = true)
+    {
+        if (buffer.Count > readPos)
+        {
+            char _value = BitConverter.ToChar(readableBuffer, readPos);
+            if (_moveReadPos)
+            {
+                readPos += 2; // char занимает 2 байта
+            }
+            return _value;
+        }
+        else
+        {
+            throw new Exception("Could not read value of type 'char'!");
         }
     }
 
@@ -298,6 +315,8 @@ public class Packet : IDisposable
     /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
     public float ReadFloat(bool _moveReadPos = true)
     {
+        Console.WriteLine($"[Packet] Читаем int: текущий readPos={readPos}, UnreadLength={UnreadLength()}");
+
         if (buffer.Count > readPos)
         {
             // If there are unread bytes
@@ -340,6 +359,8 @@ public class Packet : IDisposable
     /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
     public string ReadString(bool _moveReadPos = true)
     {
+        Console.WriteLine($"[Packet] Читаем int: текущий readPos={readPos}, UnreadLength={UnreadLength()}");
+
         try
         {
             int _length = ReadInt(); // Get the length of the string

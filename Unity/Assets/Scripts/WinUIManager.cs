@@ -33,7 +33,6 @@ public class WinUIManager : MonoBehaviour
             Debug.LogError("WinUIManager: winPanel или winnerText не назначены в инспекторе!");
         }
     }
-
     public static void ShowWinnerStatic(string winnerName)
     {
         if (instance != null)
@@ -42,7 +41,8 @@ public class WinUIManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("WinUIManager: instance не установлена!");
+            Debug.LogError("WinUIManager не найден!");
         }
     }
+
 }

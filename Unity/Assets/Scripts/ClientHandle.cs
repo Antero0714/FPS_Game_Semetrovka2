@@ -1,3 +1,4 @@
+using GameServer;
 using System;
 using UnityEngine;
 
@@ -67,46 +68,43 @@ public class ClientHandle : MonoBehaviour
     }
     public static void LetterResult(Packet _packet)
     {
-        try
+        int playerId = _packet.ReadInt();
+        int pointsAwarded = _packet.ReadInt();
+
+        Debug.Log($"[Client] Игрок {playerId} получил {pointsAwarded} очков за букву");
+
+        if (GameManager.players.TryGetValue(playerId, out PlayerManager player))
         {
-            int playerId = _packet.ReadInt();
-            int pointsAwarded = _packet.ReadInt();
-            Debug.Log($"[Client] Результат нажатия буквы для игрока {playerId}: {pointsAwarded} очков.");
-            // Обновляем рейтинг в UI, если необходимо
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Ошибка при разборе пакета letterResult: {ex}");
+            player.SetRating(player.GetRating() + pointsAwarded);
         }
     }
 
     public static void WinAnnouncement(Packet _packet)
     {
-        try
-        {
-            int winnerId = _packet.ReadInt();
-            string winnerName = _packet.ReadString();
-            Debug.Log($"[Client] Победитель: {winnerName} (ID: {winnerId})");
-            WinUIManager.ShowWinnerStatic(winnerName);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"Ошибка при разборе пакета winAnnouncement: {ex}");
-        }
+        int winnerId = _packet.ReadInt();
+        string winnerName = _packet.ReadString();
+
+        Debug.Log($"[Client] Победитель: {winnerName} (ID: {winnerId})");
+        WinUIManager.ShowWinnerStatic(winnerName);
     }
 
 
-    public static void DrumSpinResult(Packet _packet)
+    public static void DrumSpinResult(Packet packet)
     {
-        Debug.Log("[CLIENT] Получен пакет drumSpinResult!");
-        Debug.Log($"Длина пакета: {_packet.Length()}");
+        int playerId = packet.ReadInt();
+        int sectorNumber = packet.ReadInt();
+        int points = packet.ReadInt();
 
-        int playerId = _packet.ReadInt();
-        int sectorNumber = _packet.ReadInt();
-        int points = _packet.ReadInt();
+        Debug.Log($"[Client] drumSpinResult: playerId={playerId}, sector={sectorNumber}, points={points}");
 
-        Debug.Log($"[CLIENT] drumSpinResult: {playerId}, {sectorNumber}, {points}");
+        if (GameManager.players.TryGetValue(playerId, out PlayerManager player))
+        {
+            player.SetRating(player.GetRating() + points);
+        }
     }
+
+
+
 
 
     public static void PlayerPosition(Packet packet)

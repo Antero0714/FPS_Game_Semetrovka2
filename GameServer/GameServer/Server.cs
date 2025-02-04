@@ -56,24 +56,40 @@ namespace GameServer
             Console.WriteLine($"{_client.Client.RemoteEndPoint} безуспешное соединение: Сервер полон!");
         }
 
-
-
         private static void InitializeServerData()
         {
-            for(int i = 1; i <= MaxPlayers; i++)
+            for (int i = 1; i <= MaxPlayers; i++)
             {
                 clients.Add(i, new Client(i));
             }
 
-            //Инициализируем словарь в методе инициализации
+            // Инициализируем словарь в методе инициализации
             packetHandlers = new Dictionary<int, PacketHandler>()
-            {
-                { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived }
-            };
+    {
+        { (int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived },
+        { (int)ClientPackets.drumSpinRequest, ServerHandle.HandleDrumSpinRequest } // Добавьте обработчик для drumSpinRequest
+    };
             Console.WriteLine("Initialized packets...");
         }
 
 
+        public static void HandleDrumSpinRequest(int fromClient, Packet packet)
+        {
+            int playerId = packet.ReadInt();
+            int sectorNumber = packet.ReadInt();
+            int points = packet.ReadInt();
+
+            Console.WriteLine($"[Server] Игрок {playerId} запустил барабан, сектор: {sectorNumber}, очки: {points}");
+
+            if (Server.clients.TryGetValue(playerId, out Client client))
+            {
+                client.player.SetDrumResult(sectorNumber);
+                client.player.AddScore(points);
+
+                // Отправляем обновленные данные всем игрокам
+                ServerSend.RatingUpdate(playerId, client.player.score);
+            }
+        }
     }
 }
 

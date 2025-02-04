@@ -26,8 +26,10 @@ namespace GameServer
     {
         welcomeReceived = 1,
         playerMovement,
-        letterPressed  // Новый тип, если клиент отправляет выбранную букву
+        letterPressed,
+        drumSpinRequest  // Запрос на вращение барабана
     }
+
 
 
     public class Packet : IDisposable
@@ -68,14 +70,20 @@ namespace GameServer
         /// <param name="_data">The bytes to add to the packet.</param>
         public void SetBytes(byte[] _data)
         {
+            if (_data == null || _data.Length == 0)
+            {
+                throw new Exception("[Packet] Попытка установить пустые данные в пакет.");
+            }
+
             Write(_data);
             readableBuffer = buffer.ToArray();
         }
 
+
         /// <summary>Inserts the length of the packet's content at the start of the buffer.</summary>
         public void WriteLength()
         {
-            buffer.InsertRange(0, BitConverter.GetBytes(buffer.Count)); // Insert the byte length of the packet at the very beginning
+            buffer.InsertRange(0, BitConverter.GetBytes(buffer.Count));
         }
 
         /// <summary>Inserts the given int at the start of the buffer.</summary>
@@ -191,6 +199,7 @@ namespace GameServer
         }
         #endregion
 
+
         #region Read Data
         /// <summary>Reads a byte from the packet.</summary>
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
@@ -212,6 +221,7 @@ namespace GameServer
                 throw new Exception("Could not read value of type 'byte'!");
             }
         }
+
 
         /// <summary>Reads an array of bytes from the packet.</summary>
         /// <param name="_length">The length of the byte array.</param>
@@ -260,20 +270,36 @@ namespace GameServer
         /// <param name="_moveReadPos">Whether or not to move the buffer's read position.</param>
         public int ReadInt(bool _moveReadPos = true)
         {
+            Console.WriteLine($"[Packet] Читаем int: текущий readPos={readPos}, UnreadLength={UnreadLength()}");
+
             if (buffer.Count > readPos)
             {
-                // If there are unread bytes
-                int _value = BitConverter.ToInt32(readableBuffer, readPos); // Convert the bytes to an int
+                int _value = BitConverter.ToInt32(readableBuffer, readPos);
                 if (_moveReadPos)
                 {
-                    // If _moveReadPos is true
-                    readPos += 4; // Increase readPos by 4
+                    readPos += 4;
                 }
-                return _value; // Return the int
+                return _value;
             }
             else
             {
                 throw new Exception("Could not read value of type 'int'!");
+            }
+        }
+        public char ReadChar(bool _moveReadPos = true)
+        {
+            if (buffer.Count > readPos)
+            {
+                char _value = BitConverter.ToChar(readableBuffer, readPos);
+                if (_moveReadPos)
+                {
+                    readPos += 2; // char занимает 2 байта
+                }
+                return _value;
+            }
+            else
+            {
+                throw new Exception("Could not read value of type 'char'!");
             }
         }
 

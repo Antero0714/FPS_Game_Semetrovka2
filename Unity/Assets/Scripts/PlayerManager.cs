@@ -12,6 +12,11 @@ public class PlayerManager : MonoBehaviour
         Debug.Log($"Игрок {username} теперь имеет рейтинг {rating}");
     }
 
+    public int GetRating()
+    {
+        return this.rating;
+    }
+
 
 
 

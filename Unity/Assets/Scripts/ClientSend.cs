@@ -12,16 +12,17 @@ public class ClientSend : MonoBehaviour
     /// Отправляет результат спина барабана на сервер.
     /// </summary>
     /// <param name="pointsAwarded">Начисленные очки (например, 500).</param>
-    public static void SendDrumSpinResult(int pointsAwarded)
+    public static void SendDrumSpinResult(int playerId, int sectorNumber, int points)
     {
-        using (Packet _packet = new Packet((int)ClientPackets.drumSpinResult))
+        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult))
         {
-            // Отправляем ID игрока и начисленные очки
-            _packet.Write(Client.instance.myId);
-            _packet.Write(pointsAwarded);
-            Client.instance.tcp.SendData(_packet);
+            packet.Write(playerId);
+            packet.Write(sectorNumber);
+            packet.Write(points);
+            SendTCPData(packet);
         }
     }
+
 
     /// <summary>
     /// Отправляет выбранную букву на сервер.
@@ -44,13 +45,12 @@ public class ClientSend : MonoBehaviour
     {
         using (Packet _packet = new Packet((int)ClientPackets.welcomeReceived))
         {
-            // Отправляем ID клиента, чтобы сервер убедился в корректности
             _packet.Write(Client.instance.myId);
-            // Можно добавить имя, если требуется:
-            // _packet.Write(Client.instance.username);
+            _packet.Write("PlayerName"); // Пример имени игрока
             Client.instance.tcp.SendData(_packet);
         }
     }
+
 
 
 }
