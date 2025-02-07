@@ -1,3 +1,5 @@
+п»їusing System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,11 +18,12 @@ public class UIManager : MonoBehaviour
         }
         else if (instance != this)
         {
-            Debug.Log("Соединение уже сущесвтеует, чужой объект уничтожен");
+            Debug.Log("Instance already exists, destroying object!");
             Destroy(this);
         }
     }
 
+    /// <summary>Attempts to connect to the server.</summary>
     public void ConnectToServer()
     {
         startMenu.SetActive(false);

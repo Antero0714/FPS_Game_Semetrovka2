@@ -1,78 +1,73 @@
+п»їusing System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ClientSend : MonoBehaviour
 {
+    /// <summary>Sends a packet to the server via TCP.</summary>
+    /// <param name="_packet">The packet to send to the sever.</param>
     private static void SendTCPData(Packet _packet)
     {
         _packet.WriteLength();
         Client.instance.tcp.SendData(_packet);
     }
 
-    /// <summary>
-    /// Отправляет результат спина барабана на сервер.
-    /// </summary>
-    /// <param name="pointsAwarded">Начисленные очки (например, 500).</param>
-    public static void SendDrumSpinResult(int sectorNumber, int points)
+    /// <summary>Sends a packet to the server via UDP.</summary>
+    /// <param name="_packet">The packet to send to the sever.</param>
+    private static void SendUDPData(Packet _packet)
     {
-        using (Packet packet = new Packet((int)ClientPackets.drumSpinResult))
-        {
-            packet.Write(Client.instance.myId); // Отправляем свой ID
-            packet.Write(sectorNumber);
-            packet.Write(points);
-            Client.instance.tcp.SendData(packet);
-        }
-
-        Debug.Log($"[Client] Отправлен drumSpinResult: ID={Client.instance.myId}, sector={sectorNumber}, points={points}");
+        _packet.WriteLength();
+        Client.instance.udp.SendData(_packet);
     }
 
-
-    public void SendDrumSpinRequest()
-    {
-        if (Client.instance == null)
-        {
-            Debug.LogError("Client.instance is null!");
-            return;
-        }
-
-        if (Client.instance.tcp == null)
-        {
-            Debug.LogError("Client.instance.tcp is null!");
-            return;
-        }
-
-        using (Packet packet = new Packet((int)ClientPackets.drumSpinRequest))
-        {
-            packet.Write(Client.instance.myId); // ID игрока
-            Client.instance.tcp.SendData(packet);
-        }
-    }
-
-    /// <summary>
-    /// Отправляет выбранную букву на сервер.
-    /// </summary>
-    /// <param name="letter">Выбранная буква, например, "С".</param>
-    public static void SendLetterPressed(string letter)
-    {
-        using (Packet _packet = new Packet((int)ClientPackets.letterPressed))
-        {
-            // Отправляем букву (если нужно, можно добавить ID, но _fromClient в обработчике сервера берется из IAsyncResult)
-            _packet.Write(letter);
-            Client.instance.tcp.SendData(_packet);
-        }
-    }
-
-    /// <summary>
-    /// Отправка пакета welcomeReceived после получения Welcome.
-    /// </summary>
+    #region Packets
+    /// <summary>Lets the server know that the welcome message was received.</summary>
     public static void WelcomeReceived()
     {
         using (Packet _packet = new Packet((int)ClientPackets.welcomeReceived))
         {
             _packet.Write(Client.instance.myId);
-            _packet.Write("PlayerName"); // Пример имени игрока
-            Client.instance.tcp.SendData(_packet);
+            _packet.Write(UIManager.instance.usernameField.text);
+
+            SendTCPData(_packet);
         }
     }
 
+    /// <summary>Sends player input to the server.</summary>
+    /// <param name="_inputs"></param>
+    public static void PlayerMovement(bool[] _inputs)
+    {
+        using (Packet _packet = new Packet((int)ClientPackets.playerMovement))
+        {
+            _packet.Write(_inputs.Length);
+            foreach (bool _input in _inputs)
+            {
+                _packet.Write(_input);
+            }
+            _packet.Write(GameManager.players[Client.instance.myId].transform.rotation);
 
+            SendUDPData(_packet);
+        }
+    }
+
+    public static void PlayerShoot(Vector3 _facing)
+    {
+        using (Packet _packet = new Packet((int)ClientPackets.playerShoot))
+        {
+            _packet.Write(_facing);
+
+            SendTCPData(_packet);
+        }
+    }
+
+    public static void PlayerThrowItem(Vector3 _facing)
+    {
+        using (Packet _packet = new Packet((int)ClientPackets.playerThrowItem))
+        {
+            _packet.Write(_facing);
+
+            SendTCPData(_packet);
+        }
+    }
+    #endregion
 }

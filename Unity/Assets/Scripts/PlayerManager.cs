@@ -1,23 +1,44 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
     public int id;
     public string username;
-    private int rating;
+    public float health;
+    public float maxHealth = 100f;
+    public int itemCount = 0;
+    public MeshRenderer model;
 
-    public void SetRating(int rating)
+    public void Initialize(int _id, string _username)
     {
-        this.rating = rating; // Сохраняем рейтинг (не забудь создать переменную rating в классе!)
-        Debug.Log($"Игрок {username} теперь имеет рейтинг {rating}");
+        id = _id;
+        username = _username;
+        health = maxHealth;
     }
 
-    public int GetRating()
+    public void SetColor(Material material)
     {
-        return this.rating;
+        model.material = material;
     }
 
+    public void SetHealth(float _health)
+    {
+        health = _health;
 
+        if (health <= 0f)
+        {
+            Die();
+        }
+    }
 
+    public void Die()
+    {
+        model.enabled = false;
+    }
 
+    public void Respawn()
+    {
+        model.enabled = true;
+        SetHealth(maxHealth);
+    }
 }

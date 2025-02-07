@@ -1,5 +1,6 @@
-using GameServer;
-using System;
+п»їusing System.Collections;
+using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class ClientHandle : MonoBehaviour
@@ -12,147 +13,115 @@ public class ClientHandle : MonoBehaviour
         Debug.Log($"Message from server: {_msg}");
         Client.instance.myId = _myId;
         ClientSend.WelcomeReceived();
-        Debug.Log($"Получен welcome-пакет! Наш ID: {Client.instance.myId}");
-        Debug.Log($"Принятый myId от сервера: {_myId}");
 
-
+        // Now that we have the client's id, connect UDP
+        Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
     }
+
     public static void SpawnPlayer(Packet _packet)
     {
         int _id = _packet.ReadInt();
         string _username = _packet.ReadString();
-        Vector3 _position = _packet.ReadVector2();
+        Vector3 _position = _packet.ReadVector3();
         Quaternion _rotation = _packet.ReadQuaternion();
-
-        Debug.Log($"[Client] Получен игрок ID {_id}, Username: {_username}, Pos: {_position}");
 
         GameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
     }
 
-
-
-
-
-
-    public static void PlayerData(Packet _packet)
+    public static void PlayerPosition(Packet _packet)
     {
         int _id = _packet.ReadInt();
-        int _rating = _packet.ReadInt();
+        Vector3 _position = _packet.ReadVector3();
 
-        Debug.Log($"[Client] Получены данные: ID {_id}, Рейтинг {_rating}");
-
-        if (GameManager.players.ContainsKey(_id))
-        {
-            GameManager.players[_id].SetRating(_rating);
-        }
+        GameManager.players[_id].transform.position = _position;
     }
 
+    public static void PlayerRotation(Packet _packet)
+    {
+        int _id = _packet.ReadInt();
+        Quaternion _rotation = _packet.ReadQuaternion();
 
+        GameManager.players[_id].transform.rotation = _rotation;
+    }
 
     public static void PlayerDisconnected(Packet _packet)
     {
         int _id = _packet.ReadInt();
 
-        if (GameManager.players.ContainsKey(_id))
-        {
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                UnityEngine.Object.Destroy(GameManager.players[_id].gameObject);
-                GameManager.players.Remove(_id);
-            });
-        }
-        else
-        {
-            Debug.LogWarning($"Попытка удалить игрока {_id}, но его нет в GameManager.players");
-        }
-    }
-    public static void LetterResult(Packet _packet)
-    {
-        int playerId = _packet.ReadInt();
-        int pointsAwarded = _packet.ReadInt();
-
-        Debug.Log($"[Client] Игрок {playerId} получил {pointsAwarded} очков за букву");
-
-        if (GameManager.players.TryGetValue(playerId, out PlayerManager player))
-        {
-            player.SetRating(player.GetRating() + pointsAwarded);
-        }
+        Destroy(GameManager.players[_id].gameObject);
+        GameManager.players.Remove(_id);
     }
 
-    public static void WinAnnouncement(Packet _packet)
+    public static void PlayerHealth(Packet _packet)
     {
-        int winnerId = _packet.ReadInt();
-        string winnerName = _packet.ReadString();
+        int _id = _packet.ReadInt();
+        float _health = _packet.ReadFloat();
 
-        Debug.Log($"[Client] Победитель: {winnerName} (ID: {winnerId})");
-        WinUIManager.ShowWinnerStatic(winnerName);
-    }
-    public static void DrumSpinResult(Packet _packet)
-    {
-        int playerId = _packet.ReadInt();
-        int sectorNumber = _packet.ReadInt();
-        int points = _packet.ReadInt();
-
-        Debug.Log($"[Client] drumSpinResult: playerId={playerId}, sector={sectorNumber}, points={points}");
-
-        foreach (var player in GameManager.players.Values)
-        {
-            Speen speen = player.GetComponent<Speen>();
-            if (speen != null)
-            {
-                speen.SpinToSector(sectorNumber);
-            }
-        }
+        GameManager.players[_id].SetHealth(_health);
     }
 
-    public static void DrumSpinRequest(Packet _packet)
+/*    public static void PlayerRespawned(Packet _packet)
     {
-        int playerId = _packet.ReadInt(); // Читаем ID игрока
-        Debug.Log($"[Client] Получен запрос на спин от игрока {playerId}");
+        int _id = _packet.ReadInt();
 
-        // Здесь можно запустить анимацию на клиенте
-        if (GameManager.players.TryGetValue(playerId, out PlayerManager player))
-        {
-            player.GetComponent<Speen>().StartSpin();
-        }
+        GameManager.players[_id].Respawn();
+    }*/
+
+    public static void CreateItemSpawner(Packet _packet)
+    {
+        int _spawnerId = _packet.ReadInt();
+        Vector3 _spawnerPosition = _packet.ReadVector3();
+        bool _hasItem = _packet.ReadBool();
+
+        GameManager.instance.CreateItemSpawner(_spawnerId, _spawnerPosition, _hasItem);
     }
 
-
-
-    public void SendDrumSpinRequest()
+    public static void ItemSpawned(Packet _packet)
     {
-        if (Client.instance == null)
-        {
-            Debug.LogError("Client.instance is null!");
-            return;
-        }
+        int _spawnerId = _packet.ReadInt();
 
-        if (Client.instance.tcp == null)
-        {
-            Debug.LogError("Client.instance.tcp is null!");
-            return;
-        }
-
-        using (Packet packet = new Packet((int)ClientPackets.drumSpinRequest))
-        {
-            packet.Write(Client.instance.myId); // ID игрока
-            Client.instance.tcp.SendData(packet);
-        }
+        GameManager.itemSpawners[_spawnerId].ItemSpawned();
     }
 
-    public static void PlayerPosition(Packet packet)
+    public static void ItemPickedUp(Packet _packet)
     {
-        int _id = packet.ReadInt();
-        Vector3 position = packet.ReadVector2();
+        int _spawnerId = _packet.ReadInt();
+        int _byPlayer = _packet.ReadInt();
 
-        GameManager.players[_id].transform.position = position;
+        GameManager.itemSpawners[_spawnerId].ItemPickedUp();
+        GameManager.players[_byPlayer].itemCount++;
     }
 
-    public static void PlayerRotation(Packet packet)
+    public static void SpawnProjectile(Packet _packet)
     {
-        int _id = packet.ReadInt();
-        Quaternion rotation = packet.ReadQuaternion();
+        int _projectileId = _packet.ReadInt();
+        Vector3 _position = _packet.ReadVector3();
+        int _thrownByPlayer = _packet.ReadInt();
 
-        GameManager.players[_id].transform.rotation = rotation;
+        GameManager.instance.SpawnProjectile(_projectileId, _position);
+        GameManager.players[_thrownByPlayer].itemCount--;
+    }
+
+    public static void ProjectilePosition(Packet _packet)
+    {
+        int _projectileId = _packet.ReadInt();
+        Vector3 _position = _packet.ReadVector3();
+
+        GameManager.projectiles[_projectileId].transform.position = _position;
+    }
+
+    public static void ProjectileExploded(Packet _packet)
+    {
+        int _projectileId = _packet.ReadInt();
+        Vector3 _position = _packet.ReadVector3();
+
+        GameManager.projectiles[_projectileId].Explode(_position);
+    }
+
+    public static void PlayerWin(Packet _packet)
+    {
+        int _winnerId = _packet.ReadInt();
+        string _winnerName = GameManager.players[_winnerId].username;
+        VictoryUI.instance.ShowWinner(_winnerName);
     }
 }
