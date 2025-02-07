@@ -14,7 +14,10 @@ public class ClientHandle : MonoBehaviour
         Client.instance.myId = _myId;
         ClientSend.WelcomeReceived();
 
-        // Now that we have the client's id, connect UDP
+        // Устанавливаем ник игрока
+        PlayerNameUI.instance.ShowPlayerName(UIManager.instance.usernameField.text);
+
+        // Теперь, когда у нас есть ID клиента, подключаем UDP
         Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
     }
 
@@ -25,6 +28,7 @@ public class ClientHandle : MonoBehaviour
         Vector3 _position = _packet.ReadVector3();
         Quaternion _rotation = _packet.ReadQuaternion();
 
+        PlayerListUI.instance.UpdatePlayerList();
         GameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
     }
 
@@ -49,6 +53,7 @@ public class ClientHandle : MonoBehaviour
         int _id = _packet.ReadInt();
 
         Destroy(GameManager.players[_id].gameObject);
+        PlayerListUI.instance.UpdatePlayerList();
         GameManager.players.Remove(_id);
     }
 
