@@ -4,8 +4,7 @@ using TMPro;
 public class PlayerNameUI : MonoBehaviour
 {
     public static PlayerNameUI instance;
-
-    public TextMeshProUGUI playerNameText; // UI-элемент с ником игрока
+    public TextMeshProUGUI playerNameText;
 
     private void Awake()
     {
@@ -13,9 +12,9 @@ public class PlayerNameUI : MonoBehaviour
         {
             instance = this;
         }
-        else if (instance != this)
+        else
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
@@ -24,7 +23,14 @@ public class PlayerNameUI : MonoBehaviour
 
     public void ShowPlayerName(string playerName)
     {
+        Debug.Log($"Устанавливаем ник: {playerName}");
+        if (playerNameText == null)
+        {
+            Debug.LogError("playerNameText is null!");
+            return;
+        }
         playerNameText.text = playerName;
         playerNameText.gameObject.SetActive(true); // Показываем ник после подключения
+        Debug.Log("Ник установлен и отображён.");
     }
 }

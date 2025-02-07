@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class PlayerListUI : MonoBehaviour
 {
     public static PlayerListUI instance;
-
-    public TextMeshProUGUI playerListText; // UI-текст для списка игроков
+    public TextMeshProUGUI playerListText;
 
     private void Awake()
     {
@@ -15,29 +13,33 @@ public class PlayerListUI : MonoBehaviour
         {
             instance = this;
         }
-        else if (instance != this)
+        else
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
 
-        playerListText.gameObject.SetActive(false); // Скрываем список в меню
+        playerListText.gameObject.SetActive(false); // Скрываем список игроков в меню
     }
 
     public void UpdatePlayerList()
     {
-        if (GameManager.players == null || GameManager.players.Count == 0) return;
+        if (GameManager.players == null || GameManager.players.Count == 0)
+        {
+            Debug.Log("Нет игроков для отображения.");
+            playerListText.gameObject.SetActive(false); // Если никого нет, скрываем
+            return;
+        }
 
         string playerList = "Игроки онлайн:\n";
         foreach (var player in GameManager.players.Values)
         {
-            if (player.id != Client.instance.myId) // Не показываем себя в списке
-            {
-                playerList += $"{player.username}\n";
-            }
+            playerList += $"{player.username}\n";
         }
 
+        Debug.Log($"Список игроков обновлён:\n{playerList}");
         playerListText.text = playerList;
-        playerListText.gameObject.SetActive(true); // Показываем список игроков
+        playerListText.gameObject.SetActive(true);
+        Debug.Log("Список игроков отображён.");
     }
 }

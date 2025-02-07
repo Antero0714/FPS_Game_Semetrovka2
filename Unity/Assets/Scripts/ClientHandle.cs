@@ -19,6 +19,9 @@ public class ClientHandle : MonoBehaviour
 
         // Теперь, когда у нас есть ID клиента, подключаем UDP
         Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
+
+        // Обновляем список игроков
+        PlayerListUI.instance.UpdatePlayerList();
     }
 
     public static void SpawnPlayer(Packet _packet)
@@ -28,8 +31,10 @@ public class ClientHandle : MonoBehaviour
         Vector3 _position = _packet.ReadVector3();
         Quaternion _rotation = _packet.ReadQuaternion();
 
-        PlayerListUI.instance.UpdatePlayerList();
         GameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
+
+        // Обновляем список игроков
+        PlayerListUI.instance.UpdatePlayerList();
     }
 
     public static void PlayerPosition(Packet _packet)
@@ -53,8 +58,8 @@ public class ClientHandle : MonoBehaviour
         int _id = _packet.ReadInt();
 
         Destroy(GameManager.players[_id].gameObject);
-        PlayerListUI.instance.UpdatePlayerList();
         GameManager.players.Remove(_id);
+        PlayerListUI.instance.UpdatePlayerList();
     }
 
     public static void PlayerHealth(Packet _packet)
