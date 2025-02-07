@@ -26,7 +26,6 @@ public class PlayerListUI : MonoBehaviour
     {
         if (GameManager.players == null || GameManager.players.Count == 0)
         {
-            Debug.Log("Нет игроков для отображения.");
             playerListText.gameObject.SetActive(false); // Если никого нет, скрываем
             return;
         }
@@ -34,12 +33,20 @@ public class PlayerListUI : MonoBehaviour
         string playerList = "Игроки онлайн:\n";
         foreach (var player in GameManager.players.Values)
         {
-            playerList += $"{player.username}\n";
+            if (player.id != Client.instance.myId) // Не показываем свой ник
+            {
+                playerList += $"{player.username}\n";
+            }
         }
 
-        Debug.Log($"Список игроков обновлён:\n{playerList}");
-        playerListText.text = playerList;
-        playerListText.gameObject.SetActive(true);
-        Debug.Log("Список игроков отображён.");
+        if (playerList == "Игроки онлайн:\n")
+        {
+            playerListText.gameObject.SetActive(false); // Если никого кроме тебя, скрываем
+        }
+        else
+        {
+            playerListText.text = playerList;
+            playerListText.gameObject.SetActive(true);
+        }
     }
 }
