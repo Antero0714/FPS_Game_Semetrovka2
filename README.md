@@ -1,6 +1,4 @@
-**FPS GAME**
-
-## 🎮 *Игра на 4 игроков*
+## 🎮 *Multiplayer first person shooter*
 
 ### 🔧 Требования для запуска
 
