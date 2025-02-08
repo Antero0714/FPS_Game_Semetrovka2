@@ -30,4 +30,12 @@ public class UIManager : MonoBehaviour
         usernameField.interactable = false;
         Client.instance.ConnectToServer();
     }
+    public void ShowErrorMessage(string _message)
+    {
+        startMenu.SetActive(true); // Показываем стартовое меню
+        usernameField.interactable = true; // Разрешаем ввод ника
+        Debug.Log($"Error: {_message}");
+        // Здесь можно добавить отображение сообщения об ошибке на экране
+        // Например, через TextMeshPro или другой UI-элемент
+    }
 }

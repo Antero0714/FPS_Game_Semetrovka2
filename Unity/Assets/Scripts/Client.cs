@@ -296,21 +296,22 @@ public class Client : MonoBehaviour
     private void InitializeClientData()
     {
         packetHandlers = new Dictionary<int, PacketHandler>()
-        {
-            { (int)ServerPackets.welcome, ClientHandle.Welcome },
-            { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
-            { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
-            { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
-            { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
-            { (int)ServerPackets.playerHealth, ClientHandle.PlayerHealth },
-            { (int)ServerPackets.createItemSpawner, ClientHandle.CreateItemSpawner },
-            { (int)ServerPackets.itemSpawned, ClientHandle.ItemSpawned },
-            { (int)ServerPackets.itemPickedUp, ClientHandle.ItemPickedUp },
-            { (int)ServerPackets.spawnProjectile, ClientHandle.SpawnProjectile },
-            { (int)ServerPackets.projectilePosition, ClientHandle.ProjectilePosition },
-            { (int)ServerPackets.projectileExploded, ClientHandle.ProjectileExploded },
-            { (int)ServerPackets.playerWin, ClientHandle.PlayerWin }
-        };
+    {
+        { (int)ServerPackets.welcome, ClientHandle.Welcome },
+        { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+        { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
+        { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
+        { (int)ServerPackets.playerDisconnected, ClientHandle.PlayerDisconnected },
+        { (int)ServerPackets.playerHealth, ClientHandle.PlayerHealth },
+        { (int)ServerPackets.createItemSpawner, ClientHandle.CreateItemSpawner },
+        { (int)ServerPackets.itemSpawned, ClientHandle.ItemSpawned },
+        { (int)ServerPackets.itemPickedUp, ClientHandle.ItemPickedUp },
+        { (int)ServerPackets.spawnProjectile, ClientHandle.SpawnProjectile },
+        { (int)ServerPackets.projectilePosition, ClientHandle.ProjectilePosition },
+        { (int)ServerPackets.projectileExploded, ClientHandle.ProjectileExploded },
+        { (int)ServerPackets.playerWin, ClientHandle.PlayerWin },
+        { (int)ServerPackets.serverFull, ClientHandle.ServerFull } // Новый обработчик
+    };
         Debug.Log("Initialized packets.");
     }
 

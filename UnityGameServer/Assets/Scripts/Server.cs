@@ -44,16 +44,29 @@ public class Server
         tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
         Debug.Log($"Incoming connection from {_client.Client.RemoteEndPoint}...");
 
+        // Проверяем, есть ли свободные слоты
+        bool isServerFull = true;
         for (int i = 1; i <= MaxPlayers; i++)
         {
             if (clients[i].tcp.socket == null)
             {
                 clients[i].tcp.Connect(_client);
+                isServerFull = false;
                 return;
             }
         }
 
-        Debug.Log($"{_client.Client.RemoteEndPoint} failed to connect: Server full!");
+        // Если сервер переполнен
+        if (isServerFull)
+        {
+            Debug.Log($"{_client.Client.RemoteEndPoint} failed to connect: Server full!");
+            using (Packet _packet = new Packet((int)ServerPackets.serverFull))
+            {
+                _packet.Write("Server is full. Maximum 4 players allowed.");
+                _client.GetStream().Write(_packet.ToArray(), 0, _packet.Length());
+            }
+            _client.Close(); // Закрываем соединение
+        }
     }
 
     /// <summary>Receives incoming UDP data.</summary>

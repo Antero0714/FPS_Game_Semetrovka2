@@ -20,7 +20,8 @@ public enum ServerPackets
     spawnProjectile,
     projectilePosition,
     projectileExploded,
-    playerWin
+    playerWin,
+    serverFull // Новый пакет
 }
 
 /// <summary>Sent from client to server.</summary>

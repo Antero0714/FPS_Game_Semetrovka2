@@ -137,4 +137,11 @@ public class ClientHandle : MonoBehaviour
         string _winnerName = GameManager.players[_winnerId].username;
         VictoryUI.instance.ShowWinner(_winnerName);
     }
+    public static void ServerFull(Packet _packet)
+    {
+        string _message = _packet.ReadString();
+        Debug.Log($"Server is full: {_message}");
+        UIManager.instance.ShowErrorMessage(_message); // Показываем сообщение об ошибке
+        Client.instance.Disconnect(); // Отключаем клиента
+    }
 }
