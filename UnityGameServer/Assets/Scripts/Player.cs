@@ -12,8 +12,8 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpSpeed = 5f;
     public float throwForce = 600f;
-    public float health;
-    public float maxHealth = 100f;
+    public int health = 100; // Начальное здоровье
+    public int maxHealth = 100; // Максимальное здоровье
     public int itemAmount = 0;
     public int maxItemAmount = 3;
 
@@ -31,8 +31,7 @@ public class Player : MonoBehaviour
     {
         id = _id;
         username = _username;
-        health = maxHealth;
-
+        health = maxHealth; // Устанавливаем начальное здоровье
         inputs = new bool[5];
     }
 
@@ -130,23 +129,32 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float _damage)
     {
-        if (health <= 0f)
-        {
+        if (health <= 0)
             return;
-        }
 
-        health -= _damage;
-        if (health <= 0f)
+        health -= 50; // Отнимаем 50 HP за каждое попадание
+
+        if (health <= 0)
         {
-            health = 0f;
-            controller.enabled = false;
-            transform.position = new Vector3(0f, 25f, 0f);
-            ServerSend.PlayerPosition(this);
-            Server.clients[id].Disconnect(); // Отключить игрока
-            Server.CheckWinCondition(); // Проверить условие победы
+            health = 0;
+            Debug.Log($"{username} умер!");
+            ServerSend.PlayerHealth(this); // Отправляем HP клиентам
+            Die();
         }
-        ServerSend.PlayerHealth(this);
+        else
+        {
+            ServerSend.PlayerHealth(this); // Обновляем HP у всех
+        }
     }
+
+    private void Die()
+    {
+        Debug.Log($"Игрок {username} умер!");
+        ServerSend.PlayerHealth(this); // Обновляем HP для всех клиентов
+        Server.clients[id].Disconnect(); // Отключаем игрока
+        Server.CheckWinCondition(); // Проверяем победителя
+    }
+
 
     /*    private IEnumerator Respawn()
         {

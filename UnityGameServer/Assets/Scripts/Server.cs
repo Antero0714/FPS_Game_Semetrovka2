@@ -156,7 +156,7 @@ public class Server
             // Отключить победителя через 5 секунд
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                System.Threading.Thread.Sleep(5000); // Ждём 10 секунд
+                System.Threading.Thread.Sleep(5000); // Ждём 5 секунд
                 clients[lastAliveId].Disconnect(); // Отключаем победителя
             });
         }

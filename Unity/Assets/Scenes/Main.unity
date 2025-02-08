@@ -396,8 +396,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -176.4134, y: -57.7368}
-  m_SizeDelta: {x: 352.8209, y: 115.4731}
+  m_AnchoredPosition: {x: -171.78693, y: -57.736816}
+  m_SizeDelta: {x: 343.568, y: 115.4731}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &57471124
 MonoBehaviour:
@@ -446,8 +446,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.82
-  m_fontSizeBase: 51.82
+  m_fontSize: 42
+  m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1246,7 +1246,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 171.52, y: -41.632}
+  m_AnchoredPosition: {x: 171.52002, y: -41.631958}
   m_SizeDelta: {x: 343.03906, y: 83.263306}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &282565073
@@ -2053,6 +2053,7 @@ GameObject:
   - component: {fileID: 554417602}
   - component: {fileID: 554417606}
   - component: {fileID: 554417607}
+  - component: {fileID: 554417608}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2171,6 +2172,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerListText: {fileID: 57471124}
+--- !u!114 &554417608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554417601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b15db4b1c7ea2c9458c0de8e5c286f26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  victoryPanel: {fileID: 965470794}
+  winnerText: {fileID: 1862651213}
 --- !u!1 &630787560
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class PlayerListUI : MonoBehaviour
 {
     public static PlayerListUI instance;
-    public TextMeshProUGUI playerListText;
+    public TextMeshProUGUI playerListText; // Текст для списка игроков
 
     private void Awake()
     {
@@ -19,34 +19,27 @@ public class PlayerListUI : MonoBehaviour
             return;
         }
 
-        playerListText.gameObject.SetActive(false); // Скрываем список игроков в меню
+        playerListText.gameObject.SetActive(false); // Скрываем список в меню
     }
 
     public void UpdatePlayerList()
     {
         if (GameManager.players == null || GameManager.players.Count == 0)
         {
-            playerListText.gameObject.SetActive(false); // Если никого нет, скрываем
+            playerListText.gameObject.SetActive(false);
             return;
         }
 
         string playerList = "Игроки онлайн:\n";
         foreach (var player in GameManager.players.Values)
         {
-            if (player.id != Client.instance.myId) // Не показываем свой ник
+            if (player.id != Client.instance.myId) // Не показываем себя в списке
             {
-                playerList += $"{player.username}\n";
+                playerList += $"{player.username} [{player.health} HP]\n"; // Добавляем HP
             }
         }
 
-        if (playerList == "Игроки онлайн:\n")
-        {
-            playerListText.gameObject.SetActive(false); // Если никого кроме тебя, скрываем
-        }
-        else
-        {
-            playerListText.text = playerList;
-            playerListText.gameObject.SetActive(true);
-        }
+        playerListText.text = playerList;
+        playerListText.gameObject.SetActive(true);
     }
 }

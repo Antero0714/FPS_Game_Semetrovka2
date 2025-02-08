@@ -65,17 +65,22 @@ public class ClientHandle : MonoBehaviour
     public static void PlayerHealth(Packet _packet)
     {
         int _id = _packet.ReadInt();
-        float _health = _packet.ReadFloat();
+        int _health = _packet.ReadInt(); // Читаем значение здоровья
 
-        GameManager.players[_id].SetHealth(_health);
+        if (GameManager.players.ContainsKey(_id))
+        {
+            GameManager.players[_id].SetHealth(_health); // Обновляем здоровье игрока
+        }
     }
 
-/*    public static void PlayerRespawned(Packet _packet)
-    {
-        int _id = _packet.ReadInt();
 
-        GameManager.players[_id].Respawn();
-    }*/
+
+    /*    public static void PlayerRespawned(Packet _packet)
+        {
+            int _id = _packet.ReadInt();
+
+            GameManager.players[_id].Respawn();
+        }*/
 
     public static void CreateItemSpawner(Packet _packet)
     {
@@ -99,7 +104,6 @@ public class ClientHandle : MonoBehaviour
         int _byPlayer = _packet.ReadInt();
 
         GameManager.itemSpawners[_spawnerId].ItemPickedUp();
-        GameManager.players[_byPlayer].itemCount++;
     }
 
     public static void SpawnProjectile(Packet _packet)
@@ -109,7 +113,6 @@ public class ClientHandle : MonoBehaviour
         int _thrownByPlayer = _packet.ReadInt();
 
         GameManager.instance.SpawnProjectile(_projectileId, _position);
-        GameManager.players[_thrownByPlayer].itemCount--;
     }
 
     public static void ProjectilePosition(Packet _packet)

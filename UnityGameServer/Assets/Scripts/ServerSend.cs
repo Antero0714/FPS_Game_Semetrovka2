@@ -72,6 +72,17 @@ public class ServerSend
         }
     }
 
+    public static void PlayerHealth(Player _player)
+    {
+        using (Packet _packet = new Packet((int)ServerPackets.playerHealth))
+        {
+            _packet.Write(_player.id);
+            _packet.Write(_player.health); // Отправляем текущее значение здоровья
+            SendTCPDataToAll(_packet); // Отправляем всем клиентам
+        }
+    }
+
+
     #region Packets
     /// <summary>Sends a welcome message to the given client.</summary>
     /// <param name="_toClient">The client to send the packet to.</param>
@@ -134,17 +145,6 @@ public class ServerSend
         using (Packet _packet = new Packet((int)ServerPackets.playerDisconnected))
         {
             _packet.Write(_playerId);
-
-            SendTCPDataToAll(_packet);
-        }
-    }
-
-    public static void PlayerHealth(Player _player)
-    {
-        using (Packet _packet = new Packet((int)ServerPackets.playerHealth))
-        {
-            _packet.Write(_player.id);
-            _packet.Write(_player.health);
 
             SendTCPDataToAll(_packet);
         }
